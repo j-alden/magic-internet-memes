@@ -109,6 +109,7 @@ const App = () => {
         //scaleCanvasToFitViewport(img.width, img.height);
         // Update the state with the image dimensions
         setImageDimensions({ width: img.width, height: img.height });
+        canvas.renderAll();
       });
     };
     reader.readAsDataURL(file);
