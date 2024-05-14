@@ -113,26 +113,6 @@ const App = () => {
     reader.readAsDataURL(file);
   };
 
-  const scaleCanvasContent = (imgWidth, imgHeight) => {
-    const maxWidth = window.innerWidth;
-    const maxHeight = window.innerHeight;
-
-    // Calculate the scaling factor to fit the viewport
-    const scaleWidth = maxWidth / imgWidth;
-    const scaleHeight = maxHeight / imgHeight;
-    const scale = Math.min(scaleWidth, scaleHeight);
-
-    // Apply the scaling to the canvas content
-    canvas.setZoom(scale);
-
-    // Center the canvas content
-    canvas.viewportTransform = [
-      scale, 0, 0, scale,
-      (maxWidth - imgWidth * scale) / 2,
-      (maxHeight - imgHeight * scale) / 2
-    ];
-    canvas.renderAll();
-  };
 
   const scaleCanvasToFitViewport = (imgWidth, imgHeight) => {
     const maxWidth = window.innerWidth;
@@ -145,17 +125,9 @@ const App = () => {
       const scaleHeight = maxHeight / imgHeight;
       const scale = Math.min(scaleWidth, scaleHeight);
 
-      // Apply the scaling to the canvas content
-      //const canvas = canvasRef.current;
-      canvas.setZoom(scale);
-      
-      // Center the canvas content
-      canvas.viewportTransform = [
-        scale, 0, 0, scale,
-        (maxWidth - imgWidth * scale) / 2,
-        (maxHeight - imgHeight * scale) / 2
-    ];
-    canvas.renderAll();
+      // Scale CSS of canvas based on window size. Retains original image size
+      canvas.setDimensions({width: `${imgWidth * scale}px`, height: `${imgHeight * scale}px`}, {cssOnly: true})
+      //canvas.renderAll();
 
       // Set the canvas style dimensions
       // const canvasElement = document.getElementById('canvas');
@@ -178,8 +150,9 @@ const App = () => {
   // Add sticker to canvas
   const addSticker = (src) => {
     fabric.Image.fromURL(src, (img) => {
-      img.scaleToWidth(80);
-      img.scaleToHeight(80);
+      // Removed sticker scaling for now
+      // img.scaleToWidth(100);
+      // img.scaleToHeight(100);
       img.set({
         left: 100,
         top: 100,
