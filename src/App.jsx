@@ -84,13 +84,13 @@ const App = () => {
     setCanvas(newCanvas);
   }, []);
 
-  useEffect(() => {
-    if (imageDimensions.width > 0 && imageDimensions.height > 0) {
-      console.log(`height: ${imageDimensions.height}`);
-      console.log(`width: ${imageDimensions.width}`)
-      scaleCanvasToFitViewport(imageDimensions.width, imageDimensions.height);
-    }
-  }, [imageDimensions]);
+  // TRYING WITHOUT THIS
+  // useEffect(() => {
+  //   if (imageDimensions.width > 0 && imageDimensions.height > 0) {
+  //     scaleCanvasToFitViewport(imageDimensions.width, imageDimensions.height);
+  //     canvas.renderAll();
+  //   }
+  // }, [imageDimensions]);
 
   // Handle image upload
   const onDrop = (acceptedFiles) => {
@@ -99,16 +99,25 @@ const App = () => {
 
     reader.onload = (e) => {
       fabric.Image.fromURL(e.target.result, (img) => {
+
+        
+        //IGNORING FOR NOW
+        //setImageDimensions({ width: img.width, height: img.height });
+        
         //img.scaleToWidth(500);
         //img.scaleToHeight(500);
         canvas.setWidth(img.width);
         canvas.setHeight(img.height);
         canvas.clear();
         canvas.setBackgroundImage(img, canvas.renderAll.bind(canvas));
+        scaleCanvasToFitViewport(img.width, img.height);
+        canvas.renderAll();
         
         //scaleCanvasToFitViewport(img.width, img.height);
         // Update the state with the image dimensions
-        setImageDimensions({ width: img.width, height: img.height });
+        
+        // TRYING THIS EARLIER
+        //setImageDimensions({ width: img.width, height: img.height });
       });
     };
     reader.readAsDataURL(file);
@@ -119,6 +128,11 @@ const App = () => {
     const maxWidth = window.innerWidth;
     const maxHeight = window.innerHeight;
 
+    console.log(`img height: ${imgHeight}`);
+    console.log(`img width: ${imgWidth}`)
+    console.log(`max height: ${maxHeight}`);
+    console.log(`max width: ${maxWidth}`)
+
     // Only scale if image width or height is too large
     if(imgWidth > maxWidth || imgHeight > maxHeight) {
       // Calculate the scaling factor to fit the viewport
@@ -128,7 +142,9 @@ const App = () => {
 
       // Scale CSS of canvas based on window size. Retains original image size
       canvas.setDimensions({width: `${imgWidth * scale}px`, height: `${imgHeight * scale}px`}, {cssOnly: true})
-      canvas.renderAll();
+      //canvas.renderAll();
+      // IGNORING FOR NOW
+      //canvas.renderAll();
 
       // Set the canvas style dimensions
       // const canvasElement = document.getElementById('canvas');
