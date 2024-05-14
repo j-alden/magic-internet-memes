@@ -147,7 +147,7 @@ const App = () => {
 
       // Apply the scaling to the canvas content
       //const canvas = canvasRef.current;
-      setCanvas(canvas.setZoom(scale));
+      canvas.setZoom(scale);
       
       // Center the canvas content
       canvas.viewportTransform = [
@@ -212,18 +212,23 @@ const App = () => {
     const blob = dataURLToBlob(dataURL);
     const url = URL.createObjectURL(blob);
 
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = 'meme.png';
+   // const a = document.createElement('a');
+    // a.href = url;
+    // a.download = 'edited-image.png';
+    const a = document.createElement('a');
+    a.href = url;
 
-    //link.click();
     if (navigator.userAgent.match(/(iPad|iPhone|iPod)/i)) {
       a.target = '_blank';
+    } else {
+
+      a.href = url;
+      a.download = 'meme.png';
     }
     
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
   };
 
 // Blob url 
