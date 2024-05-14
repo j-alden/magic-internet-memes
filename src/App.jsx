@@ -69,7 +69,8 @@ const App = () => {
   useEffect(() => {
     const newCanvas = new fabric.Canvas(canvasRef.current, {
       selection: true,
-      preserveObjectStacking: true
+      preserveObjectStacking: true,
+      allowTouchScrolling: true
     });
 
     // Set up selection controls
