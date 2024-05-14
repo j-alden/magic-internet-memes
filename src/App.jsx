@@ -49,7 +49,7 @@ max-width: 100%;
 `;
 
 const StickerPanel = styled.div`
-  display: flex;
+  display: inline-block;
   gap: 10px;
 `;
 
@@ -57,12 +57,13 @@ const CanvasWrapper = styled.div`
   border: 2px solid #d9d9d9;
   position: relative;
 `;
-//  max-width: 500px;
-//height: 500px;
 
 const App = () => {
-  const [canvas, setCanvas] = useState(null);
   const canvasRef = useRef(null);
+  const [imageDimensions, setImageDimensions] = useState({ width: 0, height: 0 });
+
+  const [canvas, setCanvas] = useState(null);
+
 
   // Initialize Fabric canvas only once
   useEffect(() => {
@@ -82,6 +83,14 @@ const App = () => {
     setCanvas(newCanvas);
   }, []);
 
+  useEffect(() => {
+    if (imageDimensions.width > 0 && imageDimensions.height > 0) {
+      console.log(`height: ${imageDimensions.height}`);
+      console.log(`width: ${imageDimensions.width}`)
+      scaleCanvasToFitViewport(imageDimensions.width, imageDimensions.height);
+    }
+  }, [imageDimensions]);
+
   // Handle image upload
   const onDrop = (acceptedFiles) => {
     const reader = new FileReader();
@@ -95,9 +104,75 @@ const App = () => {
         canvas.setHeight(img.height);
         canvas.clear();
         canvas.setBackgroundImage(img, canvas.renderAll.bind(canvas));
+        
+        //scaleCanvasToFitViewport(img.width, img.height);
+        // Update the state with the image dimensions
+        setImageDimensions({ width: img.width, height: img.height });
       });
     };
     reader.readAsDataURL(file);
+  };
+
+  const scaleCanvasContent = (imgWidth, imgHeight) => {
+    const maxWidth = window.innerWidth;
+    const maxHeight = window.innerHeight;
+
+    // Calculate the scaling factor to fit the viewport
+    const scaleWidth = maxWidth / imgWidth;
+    const scaleHeight = maxHeight / imgHeight;
+    const scale = Math.min(scaleWidth, scaleHeight);
+
+    // Apply the scaling to the canvas content
+    canvas.setZoom(scale);
+
+    // Center the canvas content
+    canvas.viewportTransform = [
+      scale, 0, 0, scale,
+      (maxWidth - imgWidth * scale) / 2,
+      (maxHeight - imgHeight * scale) / 2
+    ];
+    canvas.renderAll();
+  };
+
+  const scaleCanvasToFitViewport = (imgWidth, imgHeight) => {
+    const maxWidth = window.innerWidth;
+    const maxHeight = window.innerHeight;
+
+    // Only scale if image width or height is too large
+    if(imgWidth > maxWidth || imgHeight > maxHeight) {
+      // Calculate the scaling factor to fit the viewport
+      const scaleWidth = maxWidth / imgWidth;
+      const scaleHeight = maxHeight / imgHeight;
+      const scale = Math.min(scaleWidth, scaleHeight);
+
+      // Apply the scaling to the canvas content
+      //const canvas = canvasRef.current;
+      setCanvas(canvas.setZoom(scale));
+      
+      // Center the canvas content
+      canvas.viewportTransform = [
+        scale, 0, 0, scale,
+        (maxWidth - imgWidth * scale) / 2,
+        (maxHeight - imgHeight * scale) / 2
+    ];
+    canvas.renderAll();
+
+      // Set the canvas style dimensions
+      // const canvasElement = document.getElementById('canvas');
+    
+      // if (canvasElement) {
+      //   console.log(`height: ${imgHeight * scale}p`);
+      //   console.log(`width: ${imgWidth * scale}p`)
+      //   // Set the canvas style dimensions
+      //   canvasElement.style.width = `${imgWidth * scale}px`;
+      //   canvasElement.style.height = `${imgHeight * scale}px`;
+      // } else {
+      //   console.error('Canvas element not found');
+      // }
+
+    }
+
+
   };
 
   // Add sticker to canvas
@@ -132,11 +207,37 @@ const App = () => {
 
   // Save selected sticker
   const downloadEditedImage = () => {
+    const dataURL  = canvas.toDataURL({ format: 'png' });
+
+    const blob = dataURLToBlob(dataURL);
+    const url = URL.createObjectURL(blob);
+
     const link = document.createElement('a');
-    link.href = canvas.toDataURL({ format: 'png' });
+    link.href = url;
     link.download = 'meme.png';
+
+    //link.click();
+    if (navigator.userAgent.match(/(iPad|iPhone|iPod)/i)) {
+      a.target = '_blank';
+    }
+    
+    document.body.appendChild(link);
     link.click();
+    document.body.removeChild(link);
   };
+
+// Blob url 
+const dataURLToBlob = (dataURL) => {
+  const byteString = atob(dataURL.split(',')[1]);
+  const mimeString = dataURL.split(',')[0].split(':')[1].split(';')[0];
+  const ab = new ArrayBuffer(byteString.length);
+  const ia = new Uint8Array(ab);
+  for (let i = 0; i < byteString.length; i++) {
+    ia[i] = byteString.charCodeAt(i);
+  }
+  return new Blob([ab], { type: mimeString });
+};
+
 
   return (
     <Layout>
@@ -151,7 +252,7 @@ const App = () => {
                 src={sticker.src}
                 alt={sticker.name}
                 width={50}
-                style={{ cursor: 'pointer' }}
+                style={{ cursor: 'pointer', display: 'inline-block' }}
                 onClick={() => addSticker(sticker.src)}
               />
             ))}
@@ -165,7 +266,7 @@ const App = () => {
             </Button>
           </Space>
           <CanvasWrapper>
-            <canvas ref={canvasRef} width={500} height={500} />
+            <canvas ref={canvasRef} id="canvas" />
           </CanvasWrapper>
         </Container>
       </Content>
