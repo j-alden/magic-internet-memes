@@ -109,7 +109,6 @@ const App = () => {
         //scaleCanvasToFitViewport(img.width, img.height);
         // Update the state with the image dimensions
         setImageDimensions({ width: img.width, height: img.height });
-        canvas.renderAll();
       });
     };
     reader.readAsDataURL(file);
@@ -129,7 +128,7 @@ const App = () => {
 
       // Scale CSS of canvas based on window size. Retains original image size
       canvas.setDimensions({width: `${imgWidth * scale}px`, height: `${imgHeight * scale}px`}, {cssOnly: true})
-      //canvas.renderAll();
+      canvas.renderAll();
 
       // Set the canvas style dimensions
       // const canvasElement = document.getElementById('canvas');
