@@ -142,7 +142,7 @@ const App = () => {
 
       // Scale CSS of canvas based on window size. Retains original image size
       canvas.setDimensions({width: `${imgWidth * scale}px`, height: `${imgHeight * scale}px`}, {cssOnly: true})
-      setTimeout( function() {canvas.renderAll(); }, 50 );
+      //canvas.renderAll();
       // IGNORING FOR NOW
       //canvas.renderAll();
 
