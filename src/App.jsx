@@ -84,6 +84,12 @@ const App = () => {
     setCanvas(newCanvas);
   }, []);
 
+  useEffect(() => {
+    if(canvas) {
+      canvas.renderAll();
+    }
+  }, []);
+
   // TRYING WITHOUT THIS
   // useEffect(() => {
   //   if (imageDimensions.width > 0 && imageDimensions.height > 0) {
@@ -110,7 +116,7 @@ const App = () => {
         canvas.setHeight(img.height);
         canvas.clear();
         canvas.setBackgroundImage(img, canvas.renderAll.bind(canvas));
-        canvas.renderAll()
+        canvas.renderAll();
         //setTimeout( function() {canvas.renderAll(); }, 50 );
         scaleCanvasToFitViewport(img.width, img.height);
         //scaleCanvasToFitViewport(img.width, img.height);
