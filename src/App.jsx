@@ -115,11 +115,13 @@ const App = () => {
         canvas.setWidth(img.width);
         canvas.setHeight(img.height);
         canvas.clear();
-        // canvas.setBackgroundImage(img, canvas.renderAll.bind(canvas));
-        canvas.backgroundImage = img;
+        canvas.setBackgroundImage(img, scaleCanvasToFitViewport(img.width, img.height));
+        //canvas.backgroundImage = img;
 
         //setTimeout( function() {canvas.renderAll(); }, 50 );
-        scaleCanvasToFitViewport(img.width, img.height);
+
+        //setTimeout( function() {scaleCanvasToFitViewport(img.width, img.height)}, 100 );
+        //scaleCanvasToFitViewport(img.width, img.height);
         //scaleCanvasToFitViewport(img.width, img.height);
         // Update the state with the image dimensions
         canvas.renderAll();
@@ -149,7 +151,7 @@ const App = () => {
 
       // Scale CSS of canvas based on window size. Retains original image size
       canvas.setDimensions({width: `${imgWidth * scale}px`, height: `${imgHeight * scale}px`}, {cssOnly: true})
-      setTimeout( function() {canvas.renderAll(); }, 100 );
+      
       // IGNORING FOR NOW
       //canvas.renderAll();
 
