@@ -115,7 +115,8 @@ const App = () => {
         canvas.setWidth(img.width);
         canvas.setHeight(img.height);
         canvas.clear();
-        canvas.setBackgroundImage(img, canvas.renderAll.bind(canvas));
+        // canvas.setBackgroundImage(img, canvas.renderAll.bind(canvas));
+        canvas.backgroundImage = img;
         canvas.renderAll();
         //setTimeout( function() {canvas.renderAll(); }, 50 );
         scaleCanvasToFitViewport(img.width, img.height);
