@@ -143,11 +143,11 @@ const App = () => {
       const scaleWidth = maxWidth / imgWidth;
       const scaleHeight = maxHeight / imgHeight;
       const scale = Math.min(scaleWidth, scaleHeight);
-      console.log(canvas.backgroundImage);
+      console.log(canvas.backgroundImage.width);
       // Scale CSS of canvas based on window size. Retains original image size
       canvas.setDimensions({width: `${imgWidth * scale}px`, height: `${imgHeight * scale}px`}, {cssOnly: true})
       
-      canvas.setBackgroundImage(canvas.backgroundImage, console.log(canvas.backgroundImage), {
+      canvas.setBackgroundImage(canvas.backgroundImage, console.log(canvas.backgroundImage.width), {
         scaleX: scale,
         scaleY: scale
     });
