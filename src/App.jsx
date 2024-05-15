@@ -84,11 +84,6 @@ const App = () => {
     setCanvas(newCanvas);
   }, []);
 
-  useEffect(() => {
-    if(canvas) {
-      canvas.renderAll();
-    }
-  }, []);
 
   // TRYING WITHOUT THIS
   // useEffect(() => {
@@ -115,7 +110,7 @@ const App = () => {
         canvas.setWidth(img.width);
         canvas.setHeight(img.height);
         canvas.clear();
-        canvas.setBackgroundImage(img, scaleCanvasToFitViewport(img.width, img.height));
+        canvas.setBackgroundImage(img, () => scaleCanvasToFitViewport(img.width, img.height));
         //canvas.backgroundImage = img;
 
         //setTimeout( function() {canvas.renderAll(); }, 50 );
@@ -151,7 +146,13 @@ const App = () => {
 
       // Scale CSS of canvas based on window size. Retains original image size
       canvas.setDimensions({width: `${imgWidth * scale}px`, height: `${imgHeight * scale}px`}, {cssOnly: true})
-      
+      console.log(canvas);
+      canvas.setBackgroundImage(canvas.backgroundImage, console.log(canvas), {
+        scaleX: scale,
+        scaleY: scale
+    });
+
+
       // IGNORING FOR NOW
       //canvas.renderAll();
 
