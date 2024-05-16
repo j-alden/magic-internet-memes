@@ -58,6 +58,8 @@ const CanvasWrapper = styled.div`
   position: relative;
 `;
 
+const MAX_IMAGE_DIMENSION = 2048;  // Limit the maximum dimension of the image to 2048px
+
 const App = () => {
   const canvasRef = useRef(null);
   const [imageDimensions, setImageDimensions] = useState({ width: 0, height: 0 });
@@ -101,16 +103,31 @@ const App = () => {
     reader.onload = (e) => {
       fabric.Image.fromURL(e.target.result, (img) => {
 
-        
-        //IGNORING FOR NOW
-        //setImageDimensions({ width: img.width, height: img.height });
-        
-        //img.scaleToWidth(500);
-        //img.scaleToHeight(500);
-        canvas.setWidth(img.width);
-        canvas.setHeight(img.height);
+        // Limit the maximum dimensions of the image
+        let scaleFactor = 1;
+        if (img.width > MAX_IMAGE_DIMENSION || img.height > MAX_IMAGE_DIMENSION) {
+          scaleFactor = MAX_IMAGE_DIMENSION / Math.max(img.width, img.height);
+        }
+
+        img.scale(scaleFactor);
+
+        // Clear the canvas
         canvas.clear();
+
+        // Set the canvas dimensions to match the image dimensions
+        canvas.setWidth(img.width * scaleFactor);
+        canvas.setHeight(img.height * scaleFactor);
+
+        // Add the image to the canvas
         canvas.setBackgroundImage(img, () => scaleCanvasToFitViewport(img.width, img.height));
+
+        // Set CSS dimensions of the canvas for consistency
+        const canvasElement = canvasRef.current;
+        if (canvasElement) {
+          canvasElement.style.width = '100%';
+          canvasElement.style.height = 'auto';
+        }
+
         //canvas.backgroundImage = img;
 
         //setTimeout( function() {canvas.renderAll(); }, 50 );

@@ -58,6 +58,7 @@ const CanvasWrapper = styled.div`
   position: relative;
 `;
 
+
 const App = () => {
   const canvasRef = useRef(null);
   const [imageDimensions, setImageDimensions] = useState({ width: 0, height: 0 });
@@ -84,6 +85,7 @@ const App = () => {
     setCanvas(newCanvas);
   }, []);
 
+
   // TRYING WITHOUT THIS
   // useEffect(() => {
   //   if (imageDimensions.width > 0 && imageDimensions.height > 0) {
@@ -109,13 +111,16 @@ const App = () => {
         canvas.setWidth(img.width);
         canvas.setHeight(img.height);
         canvas.clear();
-        canvas.setBackgroundImage(img, canvas.renderAll.bind(canvas));
-        scaleCanvasToFitViewport(img.width, img.height);
-        canvas.renderAll();
-        
+        canvas.setBackgroundImage(img, () => scaleCanvasToFitViewport(img.width, img.height));
+        //canvas.backgroundImage = img;
+
+        //setTimeout( function() {canvas.renderAll(); }, 50 );
+
+        //setTimeout( function() {scaleCanvasToFitViewport(img.width, img.height)}, 100 );
+        //scaleCanvasToFitViewport(img.width, img.height);
         //scaleCanvasToFitViewport(img.width, img.height);
         // Update the state with the image dimensions
-        
+        canvas.renderAll();
         // TRYING THIS EARLIER
         //setImageDimensions({ width: img.width, height: img.height });
       });
@@ -139,10 +144,10 @@ const App = () => {
       const scaleWidth = maxWidth / imgWidth;
       const scaleHeight = maxHeight / imgHeight;
       const scale = Math.min(scaleWidth, scaleHeight);
-
+      console.log(canvas.backgroundImage.width);
       // Scale CSS of canvas based on window size. Retains original image size
       canvas.setDimensions({width: `${imgWidth * scale}px`, height: `${imgHeight * scale}px`}, {cssOnly: true})
-      //canvas.renderAll();
+
       // IGNORING FOR NOW
       //canvas.renderAll();
 
