@@ -103,24 +103,44 @@ const App = () => {
     reader.onload = (e) => {
       fabric.Image.fromURL(e.target.result, (img) => {
 
-        // Limit the maximum dimensions of the image
-        let scaleFactor = 1;
-        if (img.width > MAX_IMAGE_DIMENSION || img.height > MAX_IMAGE_DIMENSION) {
-          scaleFactor = MAX_IMAGE_DIMENSION / Math.max(img.width, img.height);
-        }
-
-        img.scale(scaleFactor);
+      //   // Limit the maximum dimensions of the image
+      //   let scaleFactor = 1;
+      //   if (img.width > MAX_IMAGE_DIMENSION || img.height > MAX_IMAGE_DIMENSION) {
+      //     scaleFactor = MAX_IMAGE_DIMENSION / Math.max(img.width, img.height);
+      //   }
+      //   console.log(`img width: ${img.width}`);
+      //   console.log(`img height: ${img.height}`);
+        
+      //   // scale img
+      //   //img.scale(scaleFactor);
+      //   img.set({
+      //     scaleX: scaleFactor,
+      //     scaleY: scaleFactor
+      // });
+        const scaledImg = scaleImage(img);
 
         // Clear the canvas
         canvas.clear();
 
         // Set the canvas dimensions to match the image dimensions
-        canvas.setWidth(img.width * scaleFactor);
-        canvas.setHeight(img.height * scaleFactor);
+        // canvas.setWidth(img.width * scaleFactor);
+        // canvas.setHeight(img.height * scaleFactor);
+        canvas.setWidth(scaledImg.width *  scaledImg.scaleX);
+        canvas.setHeight(scaledImg.height * scaledImg.scaleY);
+
+        console.log(scaledImg);
+
+        console.log(`canvas width: ${canvas.width}`);
+        console.log(`canvas height: ${canvas.height}`);
 
         // Add the image to the canvas
-        canvas.setBackgroundImage(img, () => scaleCanvasToFitViewport(img.width, img.height));
+        //
+        // CANVAS BACKGROUND IMAGE STILL HAS (LINE 166 LOGGING) ORIGINAL DIMENSIONS, NOT SCALED
+        //
 
+        //canvas.setBackgroundImage(img, () => scaleCanvasToFitViewport(img.width * scaleFactor, img.height * scaleFactor));
+        canvas.setBackgroundImage(scaledImg, canvas.renderAll.bind(canvas));
+        
         // Set CSS dimensions of the canvas for consistency
         const canvasElement = canvasRef.current;
         if (canvasElement) {
@@ -144,15 +164,30 @@ const App = () => {
     reader.readAsDataURL(file);
   };
 
+  const scaleImage = (img) => {
+    const maxWidth = window.innerWidth;
+    const maxHeight = window.innerHeight;
+
+    // Limit the maximum dimensions of the image
+    let scaleFactor = 1;
+
+    if (img.width > maxWidth || img.height > maxHeight) {
+      const scaleWidth = maxWidth / img.width;
+      const scaleHeight = maxHeight / img.height;
+      scaleFactor = Math.min(scaleWidth, scaleHeight);
+    }
+
+    img.set({
+        scaleX: scaleFactor,
+        scaleY: scaleFactor
+    });
+    
+    return img;
+  };
 
   const scaleCanvasToFitViewport = (imgWidth, imgHeight) => {
     const maxWidth = window.innerWidth;
     const maxHeight = window.innerHeight;
-
-    console.log(`img height: ${imgHeight}`);
-    console.log(`img width: ${imgWidth}`)
-    console.log(`max height: ${maxHeight}`);
-    console.log(`max width: ${maxWidth}`)
 
     // Only scale if image width or height is too large
     if(imgWidth > maxWidth || imgHeight > maxHeight) {
@@ -160,29 +195,13 @@ const App = () => {
       const scaleWidth = maxWidth / imgWidth;
       const scaleHeight = maxHeight / imgHeight;
       const scale = Math.min(scaleWidth, scaleHeight);
-      console.log(canvas.backgroundImage.width);
+      console.log(`canvas-image-width: ${canvas.backgroundImage.width}`);
+      console.log(`canvas-image-height: ${canvas.backgroundImage.height}`);
       // Scale CSS of canvas based on window size. Retains original image size
       canvas.setDimensions({width: `${imgWidth * scale}px`, height: `${imgHeight * scale}px`}, {cssOnly: true})
-
-      // IGNORING FOR NOW
-      //canvas.renderAll();
-
-      // Set the canvas style dimensions
-      // const canvasElement = document.getElementById('canvas');
-    
-      // if (canvasElement) {
-      //   console.log(`height: ${imgHeight * scale}p`);
-      //   console.log(`width: ${imgWidth * scale}p`)
-      //   // Set the canvas style dimensions
-      //   canvasElement.style.width = `${imgWidth * scale}px`;
-      //   canvasElement.style.height = `${imgHeight * scale}px`;
-      // } else {
-      //   console.error('Canvas element not found');
-      // }
+      
 
     }
-
-
   };
 
   // Add sticker to canvas
