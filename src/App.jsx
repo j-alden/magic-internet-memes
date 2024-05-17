@@ -14,6 +14,10 @@ import 'antd/dist/reset.css';
 import { UploadOutlined } from '@ant-design/icons';
 import { useDropzone } from 'react-dropzone';
 
+// 
+import { saveAs } from 'file-saver';
+
+
 const { Content } = Layout;
 
 const stickers = [
@@ -307,7 +311,10 @@ const App = () => {
     a.href = url;
 
     if (navigator.userAgent.match(/(iPad|iPhone|iPod)/i)) {
-      a.target = '_blank';
+      exportCanvas.toBlob(function(blob) {
+        saveAs(blob, "meme.png");
+    });
+      //a.target = '_blank';
     } else {
 
       a.href = url;
