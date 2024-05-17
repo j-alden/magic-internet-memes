@@ -126,42 +126,71 @@ const App = () => {
         exportCanvas.setHeight(exportImg.height);
         console.log(exportImg);
 
-        exportCanvas.setBackgroundImage(exportImg, exportCanvas.renderAll.bind(exportCanvas));
+        //exportCanvas.setBackgroundImage(exportImg, () => console.log(exportCanvas));
 
-        exportCanvas.renderAll();
-      });
+      //   // Limit the maximum dimensions of the image
+      //   let scaleFactor = 1;
+      //   if (img.width > MAX_IMAGE_DIMENSION || img.height > MAX_IMAGE_DIMENSION) {
+      //     scaleFactor = MAX_IMAGE_DIMENSION / Math.max(img.width, img.height);
+      //   }
+      //   console.log(`img width: ${img.width}`);
+      //   console.log(`img height: ${img.height}`);
+        
+      //   // scale img
+      //   //img.scale(scaleFactor);
+      //   img.set({
+      //     scaleX: scaleFactor,
+      //     scaleY: scaleFactor
+      // });
+        exportCanvas.setBackgroundImage(exportImg, () => {
+          let scaleFactor = getScaleValue(img);
+          
+          img.set({
+            scaleX: scaleFactor,
+            scaleY: scaleFactor
+          });
 
-      fabric.Image.fromURL(e.target.result, (img) => {
-        let scaleFactor = getScaleValue(img);
-            
-        img.set({
-          scaleX: scaleFactor,
-          scaleY: scaleFactor
+          // Clear the canvas
+          canvas.clear();
+
+          // Set the canvas dimensions to match the image dimensions
+          canvas.setWidth(img.width *  scaleFactor);
+          canvas.setHeight(img.height * scaleFactor);
+
+
+          console.log(`canvas width: ${canvas.width}`);
+          console.log(`canvas height: ${canvas.height}`);
+
+          canvas.setBackgroundImage(img, canvas.renderAll.bind(canvas));
+        
+          // Set CSS dimensions of the canvas for consistency
+          const canvasElement = canvasRef.current;
+          if (canvasElement) {
+            canvasElement.style.width = '100%';
+            canvasElement.style.height = 'auto';
+          }
+
+          canvas.renderAll();
         });
 
-        // Clear the canvas
-        canvas.clear();
+        // Add the image to the canvas
+        //
+        // CANVAS BACKGROUND IMAGE STILL HAS (LINE 166 LOGGING) ORIGINAL DIMENSIONS, NOT SCALED
+        //
 
-        // Set the canvas dimensions to match the image dimensions
-        canvas.setWidth(img.width *  scaleFactor);
-        canvas.setHeight(img.height * scaleFactor);
+        //canvas.setBackgroundImage(img, () => scaleCanvasToFitViewport(img.width * scaleFactor, img.height * scaleFactor));
 
 
-        console.log(`canvas width: ${canvas.width}`);
-        console.log(`canvas height: ${canvas.height}`);
+        //canvas.backgroundImage = img;
 
-        canvas.setBackgroundImage(img, canvas.renderAll.bind(canvas));
-      
-        // Set CSS dimensions of the canvas for consistency
-        const canvasElement = canvasRef.current;
-        if (canvasElement) {
-          canvasElement.style.width = '100%';
-          canvasElement.style.height = 'auto';
-        }
+        //setTimeout( function() {canvas.renderAll(); }, 50 );
 
-        canvas.renderAll();
+        //setTimeout( function() {scaleCanvasToFitViewport(img.width, img.height)}, 100 );
+        //scaleCanvasToFitViewport(img.width, img.height);
+        //scaleCanvasToFitViewport(img.width, img.height);
+        // Update the state with the image dimensions
+
       });
-
     };
     reader.readAsDataURL(file);
   };
@@ -239,39 +268,19 @@ const App = () => {
     }
   };
 
-  const prepExportCanvas = () => {
-    const exportWidth = exportCanvas.width;
-    const exportHeight = exportCanvas.height;
-
+  const getExportCanvas = () => {
     if (canvas.width != exportCanvas.width) {
-      let scaleX = exportWidth / canvas.width;
-      let scaleY = exportHeight / canvas.height;
-      let scaleMultiplier = exportCanvas.width / canvas.width;
-
-      let objects = canvas.getObjects();
-
+      var scaleMultiplier = exportCanvas.width / canvas.width;
+      var objects = canvas.getObjects();
       for (var i in objects) {
-          let scaledObject = objects[i]
-          scaledObject.scaleX = scaledObject.scaleX * scaleX;
-          scaledObject.scaleY = scaledObject.scaleY * scaleY;
-          scaledObject.left = scaledObject.left * scaleX;
-          scaledObject.top = scaledObject.top * scaleY;
-          scaledObject.setCoords();
-          
-          exportCanvas.add(scaledObject);
-          // objects[i].scaleX = objects[i].scaleX * scaleX;
-          // objects[i].scaleY = objects[i].scaleY * scaleY;
-          // objects[i].left = objects[i].left * scaleX;
-          // objects[i].top = objects[i].top * scaleY;
-          // objects[i].setCoords();
+          objects[i].scaleX = objects[i].scaleX * scaleMultiplier;
+          objects[i].scaleY = objects[i].scaleY * scaleMultiplier;
+          objects[i].left = objects[i].left * scaleMultiplier;
+          objects[i].top = objects[i].top * scaleMultiplier;
+          objects[i].setCoords();
+          exportCanvas.set(objects[i]);
+          exportCanvas.add(objects[i]);
       }
-      // let obj = exportCanvas.backgroundImage;
-      //   if (obj) {
-      //     obj.scaleX = obj.scaleX * scaleX;
-      //     obj.scaleY = obj.scaleY * scaleY;
-      // }
-
-      //exportCanvas.add(objects);
 
       // var obj = canvas.backgroundImage;
       // if(obj){
@@ -282,15 +291,14 @@ const App = () => {
       //canvas.discardActiveObject();
       // canvas.setWidth(canvas.getWidth() * scaleMultiplier);
       // canvas.setHeight(canvas.getHeight() * scaleMultiplier);
-      exportCanvas.discardActiveObject();
       exportCanvas.renderAll();
-      exportCanvas.calcOffset();
+      //canvas.calcOffset();
   }      
   };
 
   // Save selected sticker
   const downloadEditedImage = () => {
-    prepExportCanvas();
+    //getExportCanvas();
     exportCanvas.scaleX = 1;
     exportCanvas.scaleY = 1;
     console.log(exportCanvas);
@@ -361,9 +369,9 @@ const dataURLToBlob = (dataURL) => {
           <CanvasWrapper>
             <canvas ref={canvasRef} id="canvas" />
           </CanvasWrapper>
-          {/* <CanvasWrapper>
+          <CanvasWrapper>
             <canvas ref={exportCanvasRef} id="exportCanvas" />
-          </CanvasWrapper> */}
+          </CanvasWrapper>
         </Container>
       </Content>
     </Layout>
