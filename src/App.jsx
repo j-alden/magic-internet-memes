@@ -311,14 +311,12 @@ const App = () => {
     a.href = url;
 
     if (navigator.userAgent.match(/(iPad|iPhone|iPod)/i)) {
-      exportCanvas.toBlob(function(blob) {
-        saveAs(blob, "meme.png");
-    });
+      saveAs(blob, "meme.png");
       //a.target = '_blank';
     } else {
-
-      a.href = url;
-      a.download = 'meme.png';
+      saveAs(blob, "meme.png");
+      // a.href = url;
+      // a.download = 'meme.png';
     }
     
     document.body.appendChild(a);
