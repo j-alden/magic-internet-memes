@@ -292,7 +292,7 @@ const App = () => {
     //exportCanvas.scaleX = 1;
     //exportCanvas.scaleY = 1;
 
-    const dataUrl = exportCanvas.toDataURL({ format: 'png' });
+    const dataUrl = exportCanvas.toDataURL({ format: 'jpeg' });
     const blob = dataURLtoBlob(dataUrl);
     const url = URL.createObjectURL(blob);
     //let blob = dataURLtoBlob(url);
@@ -304,7 +304,7 @@ const App = () => {
       a.target = '_blank';
     } else {
       a.target = '_blank';
-      //a.download = 'meme.png';
+      //a.download = 'meme.jpg';
     }
     document.body.appendChild(a);
     a.click();
