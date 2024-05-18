@@ -293,9 +293,12 @@ const App = () => {
   };
 
   // Save selected sticker
-  // Save selected sticker
   const downloadEditedImage = () => {
-    canvas.toBlob((blob) => {
+    prepExportCanvas();
+    //exportCanvas.scaleX = 1;
+    //exportCanvas.scaleY = 1;
+
+    exportCanvas.toBlob((blob) => {
       const url = URL.createObjectURL(blob);
 
       const a = document.createElement('a');
@@ -314,6 +317,31 @@ const App = () => {
       // Revoke the object URL after download
       URL.revokeObjectURL(url);
     }, 'image/png');
+
+
+  //   const dataURL  = exportCanvas.toDataURL({ format: 'png' });
+
+  //   const blob = dataURLToBlob(dataURL);
+  //   const url = URL.createObjectURL(blob);
+
+  //  // const a = document.createElement('a');
+  //   // a.href = url;
+  //   // a.download = 'edited-image.png';
+  //   const a = document.createElement('a');
+  //   a.href = url;
+
+  //   if (navigator.userAgent.match(/(iPad|iPhone|iPod)/i)) {
+  //     saveAs(blob, "meme.png");
+  //     //a.target = '_blank';
+  //   } else {
+  //     saveAs(blob, "meme.png");
+  //     // a.href = url;
+  //     // a.download = 'meme.png';
+  //   }
+    
+  //   document.body.appendChild(a);
+  //   a.click();
+  //   document.body.removeChild(a);
   };
 
 // Blob url 
