@@ -122,12 +122,21 @@ const App = () => {
     const file = acceptedFiles[0];
 
     reader.onload = (e) => {
-      fabric.Image.fromURL(e.target.result, (img) => {
-      // Set background canvas for export at original dimensions
+      fabric.Image.fromURL(e.target.result, (img) => {        
+        // Set background canvas for export at original dimensions
         const exportImg = img;
+
+        // Resize if too large
+        let scaleFactor = 1;
+        if (exportImg.width > MAX_IMAGE_DIMENSION || exportImg.height > MAX_IMAGE_DIMENSION) {
+          scaleFactor = MAX_IMAGE_DIMENSION / Math.max(exportImg.width, exportImg.height);
+        }
+
+        exportImg.scale(scaleFactor);
+
         exportCanvas.clear();
-        exportCanvas.setWidth(exportImg.width);
-        exportCanvas.setHeight(exportImg.height);
+        exportCanvas.setWidth(exportImg.width * scaleFactor);
+        exportCanvas.setHeight(exportImg.height * scaleFactor);
 
         exportCanvas.setBackgroundImage(exportImg, exportCanvas.renderAll.bind(exportCanvas));
 
@@ -292,7 +301,8 @@ const App = () => {
     //exportCanvas.scaleX = 1;
     //exportCanvas.scaleY = 1;
 
-    const dataUrl = exportCanvas.toDataURL({ format: 'jpeg' });
+    const dataUrl = exportCanvas.toDataURL({ format: 'jpeg', quality: 0.9 });
+
     const blob = dataURLtoBlob(dataUrl);
     const url = URL.createObjectURL(blob);
     //let blob = dataURLtoBlob(url);
@@ -300,12 +310,17 @@ const App = () => {
     const a = document.createElement('a');
     a.href = url;
 
-    if (navigator.userAgent.match(/(iPad|iPhone|iPod)/i)) {
+    // React based on device
+    if (navigator.userAgent.match(/Tablet|iPad/i)) {
       a.target = '_blank';
+        // do tablet stuff
+    } else if(navigator.userAgent.match(/Mobile|Windows Phone|Lumia|Android|webOS|iPhone|iPod|Blackberry|PlayBook|BB10|Opera Mini|\bCrMo\/|Opera Mobi/i) ) {
+      a.target = '_blank';
+        // do mobile stuff
     } else {
-      a.target = '_blank';
-      //a.download = 'meme.jpg';
+      a.download = 'meme.jpg';
     }
+
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
