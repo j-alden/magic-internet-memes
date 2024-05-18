@@ -16,6 +16,7 @@ import { useDropzone } from 'react-dropzone';
 
 // 
 import { saveAs } from 'file-saver';
+import dataURLtoBlob from 'blueimp-canvas-to-blob';
 
 
 const { Content } = Layout;
@@ -298,25 +299,19 @@ const App = () => {
     //exportCanvas.scaleX = 1;
     //exportCanvas.scaleY = 1;
 
-    exportCanvas.toBlob((blob) => {
-      const url = URL.createObjectURL(blob);
+    let url = exportCanvas.toDataURL();
+    //let blob = dataURLtoBlob(url);
 
-      const a = document.createElement('a');
-      a.href = url;
-
-      if (navigator.userAgent.match(/(iPad|iPhone|iPod)/i)) {
-        a.target = '_blank';
-      } else {
-        a.download = 'meme.png';
-      }
-
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-
-      // Revoke the object URL after download
-      URL.revokeObjectURL(url);
-    }, 'image/png');
+    const a = document.createElement('a');
+    a.href = url;
+    if (navigator.userAgent.match(/(iPad|iPhone|iPod)/i)) {
+      a.target = '_blank';
+    } else {
+      a.download = 'meme.png';
+    }
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
 
 
   //   const dataURL  = exportCanvas.toDataURL({ format: 'png' });
