@@ -14,8 +14,7 @@ import 'antd/dist/reset.css';
 import { UploadOutlined } from '@ant-design/icons';
 import { useDropzone } from 'react-dropzone';
 
-// 
-import { saveAs } from 'file-saver';
+// Converts canvas to blob w/ broader browser support
 import dataURLtoBlob from 'blueimp-canvas-to-blob';
 
 
@@ -66,16 +65,16 @@ const CanvasWrapper = styled.div`
 const MAX_IMAGE_DIMENSION = 2048;  // Limit the maximum dimension of the image to 2048px
 
 const App = () => {
-  const canvasRef = useRef(null);
-  const exportCanvasRef = useRef(null);
-  const [imageDimensions, setImageDimensions] = useState({ width: 0, height: 0 });
+  const canvasRef = useRef(null); // canvas for UI
+  const exportCanvasRef = useRef(null); // canvas for exported image
 
   const [canvas, setCanvas] = useState(null);
   const [exportCanvas, setExportCanvas] = useState(null);
 
-
   // Initialize Fabric canvas only once
   useEffect(() => {
+    
+    // UI canvas
     const newCanvas = new fabric.Canvas(canvasRef.current, {
       selection: true,
       preserveObjectStacking: true,
@@ -92,7 +91,9 @@ const App = () => {
 
     setCanvas(newCanvas);
 
+    // Export canvas
     const newExportCanvas = new fabric.Canvas(exportCanvasRef.current, {
+      selection: true,
       preserveObjectStacking: true
     });
 
@@ -108,20 +109,13 @@ const App = () => {
   }, []);
 
 
-  // TRYING WITHOUT THIS
-  // useEffect(() => {
-  //   if (imageDimensions.width > 0 && imageDimensions.height > 0) {
-  //     scaleCanvasToFitViewport(imageDimensions.width, imageDimensions.height);
-  //     canvas.renderAll();
-  //   }
-  // }, [imageDimensions]);
-
-  // Handle image upload
   const onDrop = (acceptedFiles) => {
     const reader = new FileReader();
     const file = acceptedFiles[0];
 
     reader.onload = (e) => {
+
+      // Maintain larger canvas in background for higher quality image download
       fabric.Image.fromURL(e.target.result, (img) => {        
         // Set background canvas for export at original dimensions
         const exportImg = img;
@@ -143,6 +137,7 @@ const App = () => {
         exportCanvas.renderAll();
       });
 
+      // Maintain a smaller canvas on UI that is scaled to window size
       fabric.Image.fromURL(e.target.result, (img) => {
         let scaleFactor = getScaleValue(img);
             
@@ -174,6 +169,7 @@ const App = () => {
     reader.readAsDataURL(file);
   };
 
+  // Determines value to scale image and canvas to fit screen window
   const getScaleValue = (img) => {
     const maxWidth = window.innerWidth;
     const maxHeight = window.innerHeight;
@@ -188,13 +184,6 @@ const App = () => {
     }
 
     return scaleFactor;
-
-    img.set({
-        scaleX: scaleFactor,
-        scaleY: scaleFactor
-    });
-    
-    return imgToScale;
   };
 
   const scaleCanvasToFitViewport = (imgWidth, imgHeight) => {
@@ -219,8 +208,9 @@ const App = () => {
   const addSticker = (src) => {
     fabric.Image.fromURL(src, (img) => {
       // Removed sticker scaling for now
-      // img.scaleToWidth(100);
-      // img.scaleToHeight(100);
+      img.scaleToWidth(150);
+      //img.scaleToHeight(150);
+
       img.set({
         left: 100,
         top: 100,
@@ -246,6 +236,7 @@ const App = () => {
     }
   };
 
+  // Add and scale objects from canvas to exportCanvas
   const prepExportCanvas = () => {
     const exportWidth = exportCanvas.width;
     const exportHeight = exportCanvas.height;
@@ -253,7 +244,6 @@ const App = () => {
     if (canvas.width != exportCanvas.width) {
       let scaleX = exportWidth / canvas.width;
       let scaleY = exportHeight / canvas.height;
-      let scaleMultiplier = exportCanvas.width / canvas.width;
 
       let objects = canvas.getObjects();
 
@@ -263,54 +253,29 @@ const App = () => {
           scaledObject.scaleY = scaledObject.scaleY * scaleY;
           scaledObject.left = scaledObject.left * scaleX;
           scaledObject.top = scaledObject.top * scaleY;
-          scaledObject.setCoords();
+          //scaledObject.setCoords();
           
           exportCanvas.add(scaledObject);
-          // objects[i].scaleX = objects[i].scaleX * scaleX;
-          // objects[i].scaleY = objects[i].scaleY * scaleY;
-          // objects[i].left = objects[i].left * scaleX;
-          // objects[i].top = objects[i].top * scaleY;
-          // objects[i].setCoords();
       }
-      // let obj = exportCanvas.backgroundImage;
-      //   if (obj) {
-      //     obj.scaleX = obj.scaleX * scaleX;
-      //     obj.scaleY = obj.scaleY * scaleY;
-      // }
-
-      //exportCanvas.add(objects);
-
-      // var obj = canvas.backgroundImage;
-      // if(obj){
-      //     obj.scaleX = obj.scaleX * scaleMultiplier;
-      //     obj.scaleY = obj.scaleY * scaleMultiplier;
-      // }
-
-      //canvas.discardActiveObject();
-      // canvas.setWidth(canvas.getWidth() * scaleMultiplier);
-      // canvas.setHeight(canvas.getHeight() * scaleMultiplier);
       exportCanvas.discardActiveObject();
       exportCanvas.renderAll();
       exportCanvas.calcOffset();
-  }      
+    }      
   };
 
   // Save selected sticker
   const downloadEditedImage = () => {
+    
     prepExportCanvas();
-    //exportCanvas.scaleX = 1;
-    //exportCanvas.scaleY = 1;
 
+    // Prep blob to be downloaded
     const dataUrl = exportCanvas.toDataURL({ format: 'jpeg', quality: 0.9 });
-
     const blob = dataURLtoBlob(dataUrl);
     const url = URL.createObjectURL(blob);
-    //let blob = dataURLtoBlob(url);
-
     const a = document.createElement('a');
     a.href = url;
 
-    // React based on device
+    // Open in new tab on mobile, download on desktop
     if (navigator.userAgent.match(/Tablet|iPad/i)) {
       a.target = '_blank';
         // do tablet stuff
@@ -324,45 +289,7 @@ const App = () => {
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
-
-
-  //   const dataURL  = exportCanvas.toDataURL({ format: 'png' });
-
-  //   const blob = dataURLToBlob(dataURL);
-  //   const url = URL.createObjectURL(blob);
-
-  //  // const a = document.createElement('a');
-  //   // a.href = url;
-  //   // a.download = 'edited-image.png';
-  //   const a = document.createElement('a');
-  //   a.href = url;
-
-  //   if (navigator.userAgent.match(/(iPad|iPhone|iPod)/i)) {
-  //     saveAs(blob, "meme.png");
-  //     //a.target = '_blank';
-  //   } else {
-  //     saveAs(blob, "meme.png");
-  //     // a.href = url;
-  //     // a.download = 'meme.png';
-  //   }
-    
-  //   document.body.appendChild(a);
-  //   a.click();
-  //   document.body.removeChild(a);
   };
-
-// Blob url 
-const dataURLToBlob2 = (dataURL) => {
-  const byteString = atob(dataURL.split(',')[1]);
-  const mimeString = dataURL.split(',')[0].split(':')[1].split(';')[0];
-  const ab = new ArrayBuffer(byteString.length);
-  const ia = new Uint8Array(ab);
-  for (let i = 0; i < byteString.length; i++) {
-    ia[i] = byteString.charCodeAt(i);
-  }
-  return new Blob([ab], { type: mimeString });
-};
-
 
   return (
     <Layout>
