@@ -123,13 +123,11 @@ const App = () => {
 
     reader.onload = (e) => {
       fabric.Image.fromURL(e.target.result, (img) => {
-        console.log(img);
-        // Set background canvas for export at original dimensions
+      // Set background canvas for export at original dimensions
         const exportImg = img;
         exportCanvas.clear();
         exportCanvas.setWidth(exportImg.width);
         exportCanvas.setHeight(exportImg.height);
-        console.log(exportImg);
 
         exportCanvas.setBackgroundImage(exportImg, exportCanvas.renderAll.bind(exportCanvas));
 
@@ -150,10 +148,6 @@ const App = () => {
         // Set the canvas dimensions to match the image dimensions
         canvas.setWidth(img.width *  scaleFactor);
         canvas.setHeight(img.height * scaleFactor);
-
-
-        console.log(`canvas width: ${canvas.width}`);
-        console.log(`canvas height: ${canvas.height}`);
 
         canvas.setBackgroundImage(img, canvas.renderAll.bind(canvas));
       
@@ -204,8 +198,7 @@ const App = () => {
       const scaleWidth = maxWidth / imgWidth;
       const scaleHeight = maxHeight / imgHeight;
       const scale = Math.min(scaleWidth, scaleHeight);
-      console.log(`canvas-image-width: ${canvas.backgroundImage.width}`);
-      console.log(`canvas-image-height: ${canvas.backgroundImage.height}`);
+
       // Scale CSS of canvas based on window size. Retains original image size
       canvas.setDimensions({width: `${imgWidth * scale}px`, height: `${imgHeight * scale}px`}, {cssOnly: true})
       
@@ -299,15 +292,19 @@ const App = () => {
     //exportCanvas.scaleX = 1;
     //exportCanvas.scaleY = 1;
 
-    let url = exportCanvas.toDataURL();
+    const dataUrl = exportCanvas.toDataURL({ format: 'png' });
+    const blob = dataURLtoBlob(dataUrl);
+    const url = URL.createObjectURL(blob);
     //let blob = dataURLtoBlob(url);
 
     const a = document.createElement('a');
     a.href = url;
+
     if (navigator.userAgent.match(/(iPad|iPhone|iPod)/i)) {
       a.target = '_blank';
     } else {
-      a.download = 'meme.png';
+      a.target = '_blank';
+      //a.download = 'meme.png';
     }
     document.body.appendChild(a);
     a.click();
@@ -340,7 +337,7 @@ const App = () => {
   };
 
 // Blob url 
-const dataURLToBlob = (dataURL) => {
+const dataURLToBlob2 = (dataURL) => {
   const byteString = atob(dataURL.split(',')[1]);
   const mimeString = dataURL.split(',')[0].split(':')[1].split(';')[0];
   const ab = new ArrayBuffer(byteString.length);
