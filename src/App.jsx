@@ -208,7 +208,7 @@ const App = () => {
   const addSticker = (src) => {
     fabric.Image.fromURL(src, (img) => {
       // Removed sticker scaling for now
-      img.scaleToWidth(150);
+      img.scaleToWidth(125);
       //img.scaleToHeight(150);
 
       img.set({
@@ -217,7 +217,7 @@ const App = () => {
         angle: 0,
         borderColor: 'red',
         cornerColor: 'red',
-        cornerSize: 8,
+        cornerSize: 9,
         transparentCorners: false,
         hasControls: true,
         selectable: true,
