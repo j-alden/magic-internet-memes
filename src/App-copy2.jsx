@@ -369,9 +369,9 @@ const dataURLToBlob = (dataURL) => {
           <CanvasWrapper>
             <canvas ref={canvasRef} id="canvas" />
           </CanvasWrapper>
-          <CanvasWrapper>
+          {/* <CanvasWrapper>
             <canvas ref={exportCanvasRef} id="exportCanvas" />
-          </CanvasWrapper>
+          </CanvasWrapper> */}
         </Container>
       </Content>
     </Layout>
