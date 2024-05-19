@@ -305,7 +305,7 @@ const App = () => {
               mt='xs'
               disabled={!enableButtons}
             >
-              Delete Selected Sticker
+              Delete Sticker
             </Button>
 
             <Button
