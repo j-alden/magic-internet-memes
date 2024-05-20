@@ -1,4 +1,6 @@
 let imageSRCs = [
+  'wizard1.png',
+  'wizard1-flipped.png',
   'full-face.png',
   'full-face-flipped.png',
   'face-wsb.png',
