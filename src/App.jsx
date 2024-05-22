@@ -317,7 +317,16 @@ const App = () => {
           key={sticker.id}
           src={sticker.src}
           alt={sticker.name}
-          height={70}
+          height={
+            sticker.category == 'Buttons' || sticker.category == 'Text'
+              ? null
+              : 70
+          }
+          width={
+            sticker.category == 'Buttons' || sticker.category == 'Text'
+              ? 70
+              : null
+          }
           onClick={() => addSticker(sticker.src)}
         />
       </Tabs.Panel>
