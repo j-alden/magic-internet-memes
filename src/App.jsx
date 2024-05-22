@@ -2,6 +2,7 @@
 // import reactLogo from './assets/react.svg'
 // import viteLogo from '/vite.svg'
 // import './App.css'
+//import classes from './App.css';
 
 // src/App.js
 import React, { useState, useEffect, useRef } from 'react';
@@ -12,13 +13,19 @@ import '@mantine/core/styles.css';
 import {
   MantineProvider,
   Button,
-  Space,
   AppShell,
   Image,
   Stack,
   Group,
+  Tabs,
+  rem,
 } from '@mantine/core';
-import { IconUpload, IconWand, IconTrash } from '@tabler/icons-react';
+import {
+  IconUpload,
+  IconWand,
+  IconTrash,
+  IconSwitchHorizontal,
+} from '@tabler/icons-react';
 import styled from 'styled-components';
 import { theme } from './theme';
 
@@ -59,7 +66,14 @@ const CanvasWrapper = styled.div`
   position: relative;
 `;
 
+const iconStyle = { width: rem(12), height: rem(12) };
+
 const MAX_IMAGE_DIMENSION = 2048; // Limit the maximum dimension of the image to 2048px
+
+// Get sticker categories
+const stickerCategories = [
+  ...new Set(stickers.map((sticker) => sticker.category)),
+];
 
 const App = () => {
   const canvasRef = useRef(null); // canvas for UI
@@ -221,6 +235,16 @@ const App = () => {
     }
   };
 
+  // Horizontally flip selected sticker
+  const flipActiveObject = () => {
+    const activeObject = canvas.getActiveObject();
+    if (activeObject) {
+      activeObject.flipX = !activeObject.flipX;
+      activeObject.setCoords();
+      canvas.renderAll();
+    }
+  };
+
   // Add and scale objects from canvas to exportCanvas
   const prepExportCanvas = () => {
     const exportWidth = exportCanvas.width;
@@ -277,9 +301,32 @@ const App = () => {
     document.body.removeChild(a);
   };
 
+  // Return JSX to display stickers for a given category
+  const displayStickerCategory = (category) => {
+    let categoryStickers = stickers.filter((sticker) => {
+      return sticker.category === category;
+    });
+
+    return categoryStickers.map((sticker) => (
+      <Tabs.Panel
+        value={sticker.category}
+        key={Math.random(100)}
+        // leftSection={<IconPhoto style={iconStyle} />}
+      >
+        <img
+          key={sticker.id}
+          src={sticker.src}
+          alt={sticker.name}
+          height={60}
+          onClick={() => addSticker(sticker.src)}
+        />
+      </Tabs.Panel>
+    ));
+  };
+
   return (
     // <MantineProvider theme={theme}>
-    <MantineProvider defaultColorScheme='auto'>
+    <MantineProvider defaultColorScheme='auto' theme={theme}>
       {/* <Layout> */}
       {/* <Content> */}
       <AppShell
@@ -305,9 +352,18 @@ const App = () => {
               mt='xs'
               disabled={!enableButtons}
             >
-              Delete Sticker
+              Remove Sticker
             </Button>
-
+            <Button
+              onClick={flipActiveObject}
+              rightSection={<IconSwitchHorizontal size={14} />}
+              variant='outline'
+              color='yellow'
+              mt='xs'
+              disabled={!enableButtons}
+            >
+              Flip Sticker
+            </Button>
             <Button
               onClick={downloadEditedImage}
               rightSection={<IconWand size={14} />}
@@ -320,20 +376,40 @@ const App = () => {
             </Button>
           </Group>
           <Container style={{ padding: 0 }}>
-            <StickerPanel>
-              {stickers.map((sticker) => (
-                <img
-                  key={sticker.id}
-                  src={sticker.src}
-                  alt={sticker.name}
-                  width={50}
-                  style={{ cursor: 'pointer', display: 'inline-block' }}
-                  onClick={() => addSticker(sticker.src)}
-                />
-              ))}
-            </StickerPanel>
+            <Tabs
+              defaultValue='Wizards'
+              styles={{
+                root: {
+                  width: '100%',
+                  display: 'inline-block',
+                  gap: '10px',
+                  marginTop: '10px',
+                  //height: '150px',
+                },
+                list: {},
+                panel: {
+                  cursor: 'pointer',
+                  display: 'inline-block',
+                  marginTop: '10px',
+                },
+              }}
+            >
+              <Tabs.List>
+                {stickerCategories.map((category) => (
+                  <Tabs.Tab
+                    value={category}
+                    key={Math.random(1000)}
+                    // leftSection={<IconPhoto style={iconStyle} />}
+                  >
+                    {category}
+                  </Tabs.Tab>
+                ))}
+              </Tabs.List>
+              {stickerCategories.map((sticker) =>
+                displayStickerCategory(sticker)
+              )}
+            </Tabs>
           </Container>
-
           <Container>
             <CanvasWrapper>
               <canvas ref={canvasRef} id='canvas' />
