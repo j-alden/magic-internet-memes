@@ -1,7 +1,4 @@
 let imageSRCs = [
-  { file: 'wizard1.png', category: 'Wizards' },
-  { file: 'wizard2.png', category: 'Wizards' },
-  { file: 'wizard-patient.png', category: 'Wizards' },
   { file: 'full-face.png', category: 'Faces' },
   { file: 'full-face2.png', category: 'Faces' },
   { file: 'face-wsb.png', category: 'Faces' },
@@ -13,6 +10,9 @@ let imageSRCs = [
   { file: 'hat-mzga.png', category: 'Hats' },
   { file: 'beard1.png', category: 'Beards' },
   { file: 'beard2.png', category: 'Beards' },
+  { file: 'wizard1.png', category: 'Wizards' },
+  { file: 'wizard2.png', category: 'Wizards' },
+  { file: 'wizard-patient.png', category: 'Wizards' },
   { file: 'cta-join-us.png', category: 'Buttons' },
   { file: 'cta-save-us.png', category: 'Buttons' },
   { file: 'cta-dilute-us.png', category: 'Buttons' },

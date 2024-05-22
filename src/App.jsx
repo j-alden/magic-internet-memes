@@ -317,7 +317,7 @@ const App = () => {
           key={sticker.id}
           src={sticker.src}
           alt={sticker.name}
-          height={60}
+          height={70}
           onClick={() => addSticker(sticker.src)}
         />
       </Tabs.Panel>
@@ -377,7 +377,7 @@ const App = () => {
           </Group>
           <Container style={{ padding: 0 }}>
             <Tabs
-              defaultValue='Wizards'
+              defaultValue='Faces'
               styles={{
                 root: {
                   width: '100%',
