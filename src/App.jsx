@@ -19,6 +19,8 @@ import {
   Group,
   Tabs,
   rem,
+  Text,
+  Anchor,
 } from '@mantine/core';
 
 //import { useHeadroom } from '@mantine/hooks';
@@ -367,7 +369,11 @@ const App = () => {
           </Stack>
           {/* <BannerPhoto src="/mim-banner.png" /> */}
         </AppShell.Header>
-        <AppShell.Main>
+        <AppShell.Main
+          style={{
+            marginBottom: '-30px',
+          }}
+        >
           <UploadPanel onDrop={onDrop} />
           <Group grow>
             <Button
@@ -437,26 +443,44 @@ const App = () => {
             </Tabs>
           </Container>
           <Container>
-            <CanvasWrapper>
+            <CanvasWrapper
+              style={{
+                marginBottom: '20px',
+              }}
+            >
               <canvas ref={canvasRef} id='canvas' />
             </CanvasWrapper>
           </Container>
         </AppShell.Main>
-
-        {/* <AppShell.Footer
-        // style={{
-        //   position: 'fixed',
-        //   top: 0,
-        //   left: 0,
-        //   right: 0,
-        //   //height: rem(60),
-        //   zIndex: 1000000,
-        //   transform: `translate3d(0, ${pinned ? 0 : rem(-110)}, 0)`,
-        //   transition: 'transform 400ms ease',
-        // }}
+        <AppShell.Footer
+          style={{
+            position: 'relative',
+            //bottom: 0,
+            //height: '60px',
+            //width: '100%',
+            //display: 'block',
+            // left: 0,
+            // right: 0,
+            //height: rem(20),
+            //zIndex: 1000000,
+            //transform: `translate3d(0, ${pinned ? 0 : rem(-110)}, 0)`,
+            //transition: 'transform 400ms ease',
+          }}
         >
-          Made by @buyborrowdie
-        </AppShell.Footer> */}
+          <Text
+            ta='center'
+            //c='dimmed'
+          >
+            Made by{' '}
+            <Anchor
+              href='https://twitter.com/buyborrowdie'
+              target='_blank'
+              underline='never'
+            >
+              @buyborrowdie
+            </Anchor>
+          </Text>
+        </AppShell.Footer>
       </AppShell>
       {/* </Content> */}
       {/* </Layout> */}
