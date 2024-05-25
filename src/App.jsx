@@ -21,7 +21,7 @@ import {
   rem,
 } from '@mantine/core';
 
-import { useHeadroom } from '@mantine/hooks';
+//import { useHeadroom } from '@mantine/hooks';
 
 import {
   IconUpload,
@@ -87,7 +87,7 @@ const App = () => {
   const [enableButtons, setEnableButtons] = useState(false);
 
   // Control if header is visible
-  const pinned = useHeadroom({ fixedAt: 60 });
+  //const pinned = useHeadroom({ fixedAt: 60 });
 
   // Initialize Fabric canvas only once
   useEffect(() => {
