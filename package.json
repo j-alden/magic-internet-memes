@@ -10,8 +10,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@mantine/core": "^7.9.2",
-    "@mantine/hooks": "^7.10.0",
+    "@mantine/core": "^7.10.0",
+    "@mantine/hooks": "7.10.0",
     "@tabler/icons-react": "^3.4.0",
     "@vercel/analytics": "^1.2.2",
     "antd": "^5.17.0",
