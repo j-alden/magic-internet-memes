@@ -443,10 +443,20 @@ const App = () => {
           </Container>
         </AppShell.Main>
 
-        {/* <CanvasWrapper>
-            <canvas ref={exportCanvasRef} id="exportCanvas" />
-          </CanvasWrapper> */}
-        {/* </Container> */}
+        {/* <AppShell.Footer
+        // style={{
+        //   position: 'fixed',
+        //   top: 0,
+        //   left: 0,
+        //   right: 0,
+        //   //height: rem(60),
+        //   zIndex: 1000000,
+        //   transform: `translate3d(0, ${pinned ? 0 : rem(-110)}, 0)`,
+        //   transition: 'transform 400ms ease',
+        // }}
+        >
+          Made by @buyborrowdie
+        </AppShell.Footer> */}
       </AppShell>
       {/* </Content> */}
       {/* </Layout> */}
