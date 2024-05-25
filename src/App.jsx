@@ -20,6 +20,9 @@ import {
   Tabs,
   rem,
 } from '@mantine/core';
+
+import { useHeadroom } from '@mantine/hooks';
+
 import {
   IconUpload,
   IconWand,
@@ -82,6 +85,9 @@ const App = () => {
   const [canvas, setCanvas] = useState(null);
   const [exportCanvas, setExportCanvas] = useState(null);
   const [enableButtons, setEnableButtons] = useState(false);
+
+  // Control if header is visible
+  const pinned = useHeadroom({ fixedAt: 60 });
 
   // Initialize Fabric canvas only once
   useEffect(() => {
@@ -344,7 +350,18 @@ const App = () => {
         // navbar={{ width: 300, breakpoint: 'sm', collapsed: { mobile: !opened } }}
       >
         {/* <Container> */}
-        <AppShell.Header>
+        <AppShell.Header
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            //height: rem(60),
+            zIndex: 1000000,
+            transform: `translate3d(0, ${pinned ? 0 : rem(-110)}, 0)`,
+            transition: 'transform 400ms ease',
+          }}
+        >
           <Stack h={'100%'} justify='center'>
             <Image src='/mim-banner.png' mah='100px' fit='contain' />
           </Stack>
