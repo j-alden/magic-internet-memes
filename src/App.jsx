@@ -1,8 +1,7 @@
 // import { useState } from 'react'
 // import reactLogo from './assets/react.svg'
 // import viteLogo from '/vite.svg'
-// import './App.css'
-//import classes from './App.css';
+import './App.css';
 
 // src/App.js
 import React, { useState, useEffect, useRef } from 'react';
@@ -14,41 +13,25 @@ import {
   MantineProvider,
   Button,
   AppShell,
-  Image,
-  Stack,
-  Group,
   Tabs,
-  rem,
-  Text,
-  Anchor,
+  TextInput,
 } from '@mantine/core';
-
-//import { useHeadroom } from '@mantine/hooks';
-
-import {
-  IconUpload,
-  IconWand,
-  IconTrash,
-  IconSwitchHorizontal,
-} from '@tabler/icons-react';
 import styled from 'styled-components';
 import { theme } from './theme';
 
-// Antd (removing)
-//import { Layout, Button, Space } from 'antd';
-
-//import 'antd/dist/reset.css';
-
-//import 'antd/dist/antd.min.css';
-import { UploadOutlined } from '@ant-design/icons';
-import { useDropzone } from 'react-dropzone';
-
-// Converts canvas to blob w/ broader browser support
-import dataURLtoBlob from 'blueimp-canvas-to-blob';
-
-//const { Content } = Layout;
-
+// Stickers
 import stickers from './stickers.js';
+
+// Custom wizard font
+import './assets/WizardFont.otf';
+
+// Components
+import Header from './components/Header.jsx';
+import StickerPanel from './components/StickerPanel.jsx';
+import Footer from './components/Footer.jsx';
+import UploadPanel from './components/UploadPanel.jsx';
+import CanvasTools from './components/CanvasTools.jsx';
+import DownloadPanel from './components/DownloadPanel.jsx';
 
 // Styled components
 
@@ -60,25 +43,18 @@ const Container = styled.div`
   gap: 20px;
 `;
 
-const StickerPanel = styled.div`
-  display: inline-block;
-  gap: 10px;
-  margin-top: 10px;
-`;
+// const StickerPanel = styled.div`
+//   display: inline-block;
+//   gap: 10px;
+//   margin-top: 10px;
+// `;
 
 const CanvasWrapper = styled.div`
   border: 2px solid #d9d9d9;
   position: relative;
 `;
 
-const iconStyle = { width: rem(12), height: rem(12) };
-
 const MAX_IMAGE_DIMENSION = 2048; // Limit the maximum dimension of the image to 2048px
-
-// Get sticker categories
-const stickerCategories = [
-  ...new Set(stickers.map((sticker) => sticker.category)),
-];
 
 const App = () => {
   const canvasRef = useRef(null); // canvas for UI
@@ -87,6 +63,7 @@ const App = () => {
   const [canvas, setCanvas] = useState(null);
   const [exportCanvas, setExportCanvas] = useState(null);
   const [enableButtons, setEnableButtons] = useState(false);
+  const [inputText, setInputText] = useState(''); // State for the text input
 
   // Control if header is visible
   //const pinned = useHeadroom({ fixedAt: 60 });
@@ -212,235 +189,37 @@ const App = () => {
     return scaleFactor;
   };
 
-  // Add sticker to canvas
-  const addSticker = (src) => {
-    fabric.Image.fromURL(src, (img) => {
-      // Removed sticker scaling for now
-      img.scaleToWidth(125);
-      //img.scaleToHeight(150);
-      img.set({
-        left: 100,
-        top: 100,
-        angle: 0,
-        borderColor: 'red',
-        cornerColor: 'red',
-        cornerSize: 9,
-        transparentCorners: false,
-        hasControls: true,
-        selectable: true,
-        lockScalingFlip: true,
-      });
-      canvas.add(img);
-      canvas.setActiveObject(img);
+  // Add text to canvas
+  const addText = () => {
+    const text = new fabric.Text(inputText, {
+      left: 100,
+      top: 100,
+      fill: 'black',
+      fontSize: 20,
+      selectable: true,
+      fontFamily: 'WizardFont',
     });
-  };
-
-  // Delete selected sticker
-  const deleteActiveObject = () => {
-    const activeObject = canvas.getActiveObject();
-    if (activeObject) {
-      canvas.remove(activeObject);
-    }
-  };
-
-  // Horizontally flip selected sticker
-  const flipActiveObject = () => {
-    const activeObject = canvas.getActiveObject();
-    if (activeObject) {
-      activeObject.flipX = !activeObject.flipX;
-      activeObject.setCoords();
-      canvas.renderAll();
-    }
-  };
-
-  // Add and scale objects from canvas to exportCanvas
-  const prepExportCanvas = () => {
-    const exportWidth = exportCanvas.width;
-    const exportHeight = exportCanvas.height;
-
-    let scaleX = exportWidth / canvas.width;
-    let scaleY = exportHeight / canvas.height;
-
-    let objects = canvas.getObjects();
-
-    for (var i in objects) {
-      let scaledObject = objects[i];
-      scaledObject.scaleX = scaledObject.scaleX * scaleX;
-      scaledObject.scaleY = scaledObject.scaleY * scaleY;
-      scaledObject.left = scaledObject.left * scaleX;
-      scaledObject.top = scaledObject.top * scaleY;
-      //scaledObject.setCoords();
-
-      exportCanvas.add(scaledObject);
-    }
-    exportCanvas.discardActiveObject();
-    exportCanvas.renderAll();
-    exportCanvas.calcOffset();
-  };
-
-  // Save selected sticker
-  const downloadEditedImage = () => {
-    prepExportCanvas();
-
-    // Prep blob to be downloaded
-    const dataUrl = exportCanvas.toDataURL({ format: 'jpeg', quality: 0.9 });
-    const blob = dataURLtoBlob(dataUrl);
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-
-    // Open in new tab on mobile, download on desktop
-    if (navigator.userAgent.match(/Tablet|iPad/i)) {
-      a.target = '_blank';
-      // do tablet stuff
-    } else if (
-      navigator.userAgent.match(
-        /Mobile|Windows Phone|Lumia|Android|webOS|iPhone|iPod|Blackberry|PlayBook|BB10|Opera Mini|\bCrMo\/|Opera Mobi/i
-      )
-    ) {
-      a.target = '_blank';
-      // do mobile stuff
-    } else {
-      a.download = 'meme.jpg';
-    }
-
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-  };
-
-  // Return JSX to display stickers for a given category
-  const displayStickerCategory = (category) => {
-    let categoryStickers = stickers.filter((sticker) => {
-      return sticker.category === category;
-    });
-
-    return categoryStickers.map((sticker) => (
-      <Tabs.Panel
-        value={sticker.category}
-        key={Math.random(100)}
-        // leftSection={<IconPhoto style={iconStyle} />}
-      >
-        <img
-          key={sticker.id}
-          src={sticker.src}
-          alt={sticker.name}
-          height={
-            sticker.category == 'Buttons' || sticker.category == 'Text'
-              ? null
-              : 70
-          }
-          width={
-            sticker.category == 'Buttons' || sticker.category == 'Text'
-              ? 70
-              : null
-          }
-          onClick={() => addSticker(sticker.src)}
-        />
-      </Tabs.Panel>
-    ));
+    canvas.add(text);
+    canvas.setActiveObject(text);
   };
 
   return (
-    // <MantineProvider theme={theme}>
     <MantineProvider defaultColorScheme='auto' theme={theme}>
-      {/* <Layout> */}
-      {/* <Content> */}
-      <AppShell
-        padding='md'
-        header={{ height: 100 }}
-        // navbar={{ width: 300, breakpoint: 'sm', collapsed: { mobile: !opened } }}
-      >
-        {/* <Container> */}
-        <AppShell.Header
-          style={{
-            position: 'absolute', // fixed will keep it pinned to top while scrolling
-            top: 0,
-            // left: 0,
-            // right: 0,
-            //height: rem(60),
-            //zIndex: 1000000,
-            //transform: `translate3d(0, ${pinned ? 0 : rem(-110)}, 0)`,
-            //transition: 'transform 400ms ease',
-          }}
-        >
-          <Stack h={'100%'} justify='center'>
-            <Image src='/mim-banner.png' mah='100px' fit='contain' />
-          </Stack>
-          {/* <BannerPhoto src="/mim-banner.png" /> */}
-        </AppShell.Header>
+      <AppShell padding='md' header={{ height: 100 }}>
+        <Header />
         <AppShell.Main
           style={{
             marginBottom: '-30px',
           }}
         >
           <UploadPanel onDrop={onDrop} />
-          <Group grow>
-            <Button
-              onClick={deleteActiveObject}
-              rightSection={<IconTrash size={14} />}
-              variant='outline'
-              color='red'
-              mt='xs'
-              disabled={!enableButtons}
-            >
-              Remove Sticker
-            </Button>
-            <Button
-              onClick={flipActiveObject}
-              rightSection={<IconSwitchHorizontal size={14} />}
-              variant='outline'
-              color='yellow'
-              mt='xs'
-              disabled={!enableButtons}
-            >
-              Flip Sticker
-            </Button>
-            <Button
-              onClick={downloadEditedImage}
-              rightSection={<IconWand size={14} />}
-              mt='xs'
-              color='green'
-              variant='outline'
-              disabled={!enableButtons}
-            >
-              Save Image
-            </Button>
-          </Group>
+          <CanvasTools
+            enabled={enableButtons}
+            canvas={canvas}
+            exportCanvas={exportCanvas}
+          />
           <Container style={{ padding: 0 }}>
-            <Tabs
-              defaultValue='Faces'
-              styles={{
-                root: {
-                  width: '100%',
-                  display: 'inline-block',
-                  gap: '10px',
-                  marginTop: '10px',
-                  //height: '150px',
-                },
-                list: {},
-                panel: {
-                  cursor: 'pointer',
-                  display: 'inline-block',
-                  marginTop: '10px',
-                },
-              }}
-            >
-              <Tabs.List>
-                {stickerCategories.map((category) => (
-                  <Tabs.Tab
-                    value={category}
-                    key={Math.random(1000)}
-                    // leftSection={<IconPhoto style={iconStyle} />}
-                  >
-                    {category}
-                  </Tabs.Tab>
-                ))}
-              </Tabs.List>
-              {stickerCategories.map((sticker) =>
-                displayStickerCategory(sticker)
-              )}
-            </Tabs>
+            <StickerPanel canvas={canvas} />
           </Container>
           <Container>
             <CanvasWrapper
@@ -451,62 +230,16 @@ const App = () => {
               <canvas ref={canvasRef} id='canvas' />
             </CanvasWrapper>
           </Container>
+          {/* <Container>
+            <DownloadPanel
+              onDownload={downloadEditedImage}
+              enabled={enableButtons}
+            />
+          </Container> */}
         </AppShell.Main>
-        <AppShell.Footer
-          style={{
-            position: 'relative',
-            //bottom: 0,
-            //height: '60px',
-            //width: '100%',
-            //display: 'block',
-            // left: 0,
-            // right: 0,
-            //height: rem(20),
-            //zIndex: 1000000,
-            //transform: `translate3d(0, ${pinned ? 0 : rem(-110)}, 0)`,
-            //transition: 'transform 400ms ease',
-          }}
-        >
-          <Text
-            ta='center'
-            //c='dimmed'
-          >
-            Made by{' '}
-            <Anchor
-              href='https://twitter.com/buyborrowdie'
-              target='_blank'
-              underline='never'
-            >
-              @buyborrowdie
-            </Anchor>
-          </Text>
-        </AppShell.Footer>
+        <Footer />
       </AppShell>
-      {/* </Content> */}
-      {/* </Layout> */}
     </MantineProvider>
-  );
-};
-
-const UploadPanel = ({ onDrop }) => {
-  const { getRootProps, getInputProps } = useDropzone({
-    onDrop,
-    multiple: false,
-    accept: 'image/*',
-  });
-
-  return (
-    <div {...getRootProps()}>
-      <input {...getInputProps()} />
-      <Button
-        rightSection={<IconUpload size={14} />}
-        fullWidth
-        variant='outline'
-        mt='xs'
-      >
-        Upload Image
-      </Button>
-    </div>
   );
 };
 
