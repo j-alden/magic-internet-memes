@@ -4,6 +4,23 @@
     url('./assets/WizardFont.otf') format('opentype');
 }
 
+@font-face {
+  font-family: BabyDoll;
+  src: local('AirbnbCerealLight'),
+    url('./assets/BabyDoll.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: MsPain; /*Can be any text*/
+  src: local('AirbnbCerealLight'),
+    url('./assets/MS_PAIN.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: Poppin; /*Can be any text*/
+  src: local('AirbnbCerealLight'),
+    url('./assets/Poppin-Regular.ttf') format('truetype');
+}
 /*
 Convert font to other file types for wider browser support
 https://stackoverflow.com/questions/3245141/using-otf-fonts-on-web-browsers

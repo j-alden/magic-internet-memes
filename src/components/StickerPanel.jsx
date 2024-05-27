@@ -3,7 +3,7 @@ import { fabric } from 'fabric';
 import { Tabs } from '@mantine/core';
 import stickers from '../helpers/stickers.js';
 
-import { TextInput, Button, Group } from '@mantine/core';
+import { TextInput, Button, Group, Textarea } from '@mantine/core';
 
 // Get sticker categories
 const stickerCategories = [
@@ -40,7 +40,7 @@ const StickerPanel = ({ canvas }) => {
           />
         ))}
         {category == 'Text' ? (
-          <TextInput
+          <Textarea
             label='Custom Text'
             onChange={(e) => setInputText(e.target.value)}
             value={inputText}
@@ -87,8 +87,11 @@ const StickerPanel = ({ canvas }) => {
       left: 100,
       top: 100,
       fill: 'black',
-      fontSize: 20,
+      fontSize: 30,
       selectable: true,
+      stroke: '#2bf907',
+      strokeWidth: 1,
+      fontFamily: 'Poppin',
       //fontFamily: 'WizardFont',
     });
     canvas.add(text);
