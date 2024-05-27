@@ -3,6 +3,8 @@ import { fabric } from 'fabric';
 import { Tabs } from '@mantine/core';
 import stickers from '../helpers/stickers.js';
 
+import { TextInput, Button, Group } from '@mantine/core';
+
 // Get sticker categories
 const stickerCategories = [
   ...new Set(stickers.map((sticker) => sticker.category)),
@@ -37,17 +39,21 @@ const StickerPanel = ({ canvas }) => {
             onClick={() => addSticker(sticker.src)}
           />
         ))}
-        {/* {category == 'Text' ? (
-          <div>
-            <TextInput
-              label='Enter custom text'
-              value={inputText}
-              onChange={(e) => setInputText(e.target.value)}
-              style={{ width: 200 }}
-            />
-            <Button onClick={addText}>Add Text</Button>
-          </div>
-        ) : null} */}
+        {category == 'Text' ? (
+          <TextInput
+            label='Custom Text'
+            onChange={(e) => setInputText(e.target.value)}
+            value={inputText}
+            inputContainer={(children) => (
+              <Group align='flex-start'>
+                {children}
+                <Button onClick={addText} style={{}}>
+                  Add Text
+                </Button>
+              </Group>
+            )}
+          />
+        ) : null}
       </Tabs.Panel>
     );
   };
@@ -83,7 +89,7 @@ const StickerPanel = ({ canvas }) => {
       fill: 'black',
       fontSize: 20,
       selectable: true,
-      fontFamily: 'WizardFont',
+      //fontFamily: 'WizardFont',
     });
     canvas.add(text);
     canvas.setActiveObject(text);

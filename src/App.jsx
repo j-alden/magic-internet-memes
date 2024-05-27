@@ -9,9 +9,10 @@ import { fabric } from 'fabric';
 
 // Styling
 import '@mantine/core/styles.css';
-import { MantineProvider, AppShell } from '@mantine/core';
+import { MantineProvider, AppShell, Title, Image } from '@mantine/core';
 import styled from 'styled-components';
 import { theme } from './theme';
+import { IconWand } from '@tabler/icons-react';
 
 // Custom wizard font
 import './assets/WizardFont.otf';
@@ -148,6 +149,8 @@ const App = () => {
         }
 
         canvas.renderAll();
+        // Enabled Delete and Save buttons
+        setEnableButtons(true);
       });
     };
     reader.readAsDataURL(file);
@@ -190,10 +193,26 @@ const App = () => {
           </Container>
           <Container>
             <CanvasWrapper
-              style={{
-                marginBottom: '20px',
-              }}
+            // style={{
+            //   marginBottom: '20px',
+            // }}
             >
+              {!enableButtons ? (
+                <Title
+                  order={2}
+                  style={{ margin: '20px', alignContent: 'center' }}
+                >
+                  Upload image to start the magic
+                  {/* <IconWand /> */}
+                  <Image
+                    src='/ogwizzybare_grayscale.png'
+                    mah='200px'
+                    //maw='50%'
+                    fit='contain'
+                    style={{ margin: 20 }}
+                  />
+                </Title>
+              ) : null}
               <canvas ref={canvasRef} id='canvas' />
             </CanvasWrapper>
           </Container>
