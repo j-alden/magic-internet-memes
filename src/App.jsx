@@ -9,18 +9,9 @@ import { fabric } from 'fabric';
 
 // Styling
 import '@mantine/core/styles.css';
-import {
-  MantineProvider,
-  Button,
-  AppShell,
-  Tabs,
-  TextInput,
-} from '@mantine/core';
+import { MantineProvider, AppShell } from '@mantine/core';
 import styled from 'styled-components';
 import { theme } from './theme';
-
-// Stickers
-import stickers from './stickers.js';
 
 // Custom wizard font
 import './assets/WizardFont.otf';
@@ -43,12 +34,6 @@ const Container = styled.div`
   gap: 20px;
 `;
 
-// const StickerPanel = styled.div`
-//   display: inline-block;
-//   gap: 10px;
-//   margin-top: 10px;
-// `;
-
 const CanvasWrapper = styled.div`
   border: 2px solid #d9d9d9;
   position: relative;
@@ -63,10 +48,6 @@ const App = () => {
   const [canvas, setCanvas] = useState(null);
   const [exportCanvas, setExportCanvas] = useState(null);
   const [enableButtons, setEnableButtons] = useState(false);
-  const [inputText, setInputText] = useState(''); // State for the text input
-
-  // Control if header is visible
-  //const pinned = useHeadroom({ fixedAt: 60 });
 
   // Initialize Fabric canvas only once
   useEffect(() => {
@@ -189,20 +170,6 @@ const App = () => {
     return scaleFactor;
   };
 
-  // Add text to canvas
-  const addText = () => {
-    const text = new fabric.Text(inputText, {
-      left: 100,
-      top: 100,
-      fill: 'black',
-      fontSize: 20,
-      selectable: true,
-      fontFamily: 'WizardFont',
-    });
-    canvas.add(text);
-    canvas.setActiveObject(text);
-  };
-
   return (
     <MantineProvider defaultColorScheme='auto' theme={theme}>
       <AppShell padding='md' header={{ height: 100 }}>
@@ -230,12 +197,6 @@ const App = () => {
               <canvas ref={canvasRef} id='canvas' />
             </CanvasWrapper>
           </Container>
-          {/* <Container>
-            <DownloadPanel
-              onDownload={downloadEditedImage}
-              enabled={enableButtons}
-            />
-          </Container> */}
         </AppShell.Main>
         <Footer />
       </AppShell>
