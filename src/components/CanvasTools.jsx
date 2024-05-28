@@ -5,6 +5,9 @@ import { IconWand, IconTrash, IconSwitchHorizontal } from '@tabler/icons-react';
 // Helper function
 import downloadEditedImage from '../helpers/downloadEditedImage';
 
+// Axios to call serverless functions
+import axios from 'axios';
+
 const CanvasTools = ({ canvas, exportCanvas, enabled }) => {
   // Delete selected sticker
   const deleteActiveObject = () => {
@@ -25,6 +28,9 @@ const CanvasTools = ({ canvas, exportCanvas, enabled }) => {
   };
 
   const downloadImage = () => {
+    // axios
+    //   .get('https://www.magicinternet.meme/api/hello')
+    //   .then((response) => console.log(response));
     downloadEditedImage(canvas, exportCanvas);
   };
 
