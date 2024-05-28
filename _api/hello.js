@@ -1,3 +1,5 @@
+import { VercelRequest, VercelResponse } from '@vercel/node';
+
 // //Should run on edge runtime
 // export const edge = true;
 
@@ -24,6 +26,6 @@ export const config = {
   runtime: 'nodejs',
 };
 
-export function GET(request) {
-  return new Response(`Hello from ${process.env.VERCEL_REGION}`);
+export default async function handler(req, res) {
+  return response.send('OK');
 }

@@ -88,10 +88,11 @@ const StickerPanel = ({ canvas }) => {
       top: 100,
       fill: 'black',
       fontSize: 30,
+      //charSpacing: -50,
       selectable: true,
       stroke: '#2bf907',
       strokeWidth: 1,
-      fontFamily: 'Poppin',
+      fontFamily: 'MagicInternetMoney',
       //fontFamily: 'WizardFont',
     });
     canvas.add(text);

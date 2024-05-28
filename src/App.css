@@ -1,7 +1,7 @@
 @font-face {
-  font-family: WizardFont; /*Can be any text*/
+  font-family: MagicInternetMoney; /*Can be any text*/
   src: local('AirbnbCerealLight'),
-    url('./assets/WizardFont.otf') format('opentype');
+    url('./assets/MagicInternetMoney.otf') format('opentype');
 }
 
 @font-face {

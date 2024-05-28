@@ -15,6 +15,7 @@
     "@tabler/icons-react": "^3.4.0",
     "@vercel/analytics": "^1.2.2",
     "@vercel/blob": "^0.23.3",
+    "@vercel/node": "^3.1.5",
     "antd": "^5.17.0",
     "axios": "^1.7.2",
     "blueimp-canvas-to-blob": "^3.29.0",
