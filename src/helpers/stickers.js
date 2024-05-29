@@ -15,6 +15,7 @@ let imageSRCs = [
   { file: 'beard2.png', category: 'Beards' },
   { file: 'beard3.png', category: 'Beards' },
   { file: 'beard5.png', category: 'Beards' },
+  { file: 'beard6.png', category: 'Beards' },
   { file: 'wizard1.png', category: 'Wizards' },
   { file: 'wizard2.png', category: 'Wizards' },
   { file: 'wizard-patient.png', category: 'Wizards' },

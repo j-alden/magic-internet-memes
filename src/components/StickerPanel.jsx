@@ -43,7 +43,7 @@ const StickerPanel = ({ canvas }) => {
         {category == 'Text' ? (
           <Paper withBorder p='sm' mt='xs' maw='50%'>
             <Textarea
-              label='Custom Text'
+              label='Add Custom Text'
               //size='lg'
               //height='100%'
               resize='both'
