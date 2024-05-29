@@ -1,5 +1,6 @@
 let imageSRCs = [
   { file: 'full-face.png', category: 'Faces' },
+  { file: 'full-face-3.png', category: 'Faces' },
   { file: 'full-face2.png', category: 'Faces' },
   { file: 'face-wsb.png', category: 'Faces' },
   { file: 'metal-hat-face.png', category: 'Faces' },
