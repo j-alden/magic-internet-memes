@@ -3,7 +3,7 @@ import { fabric } from 'fabric';
 import { Tabs } from '@mantine/core';
 import stickers from '../helpers/stickers.js';
 
-import { TextInput, Button, Group, Textarea } from '@mantine/core';
+import { Button, Paper, Textarea, Radio, Stack, Group } from '@mantine/core';
 
 // Get sticker categories
 const stickerCategories = [
@@ -12,6 +12,7 @@ const stickerCategories = [
 
 const StickerPanel = ({ canvas }) => {
   const [inputText, setInputText] = useState(''); // State for the text input
+  const [textColor, setTextColor] = useState('#2bf907');
 
   // Return JSX to display stickers for a given category
   const displayStickerCategory = (category) => {
@@ -40,19 +41,38 @@ const StickerPanel = ({ canvas }) => {
           />
         ))}
         {category == 'Text' ? (
-          <Textarea
-            label='Custom Text'
-            onChange={(e) => setInputText(e.target.value)}
-            value={inputText}
-            inputContainer={(children) => (
-              <Group align='flex-start'>
-                {children}
-                <Button onClick={addText} style={{}}>
-                  Add Text
-                </Button>
-              </Group>
-            )}
-          />
+          <Paper withBorder p='sm'>
+            <Textarea
+              label='Custom Text'
+              //size='lg'
+              //height='100%'
+              resize='both'
+              onChange={(e) => setInputText(e.target.value)}
+              value={inputText}
+              inputContainer={(children) => (
+                // <Group align='flex-start'>
+                <div>
+                  {children}
+                  <Radio.Group
+                    name='color'
+                    label='Text Color'
+                    value={textColor}
+                    onChange={setTextColor}
+                    align='flex-start'
+                    mt='xs'
+                  >
+                    <Group mb='xs'>
+                      <Radio value='#2bf907' label='Green' checked />
+                      <Radio value='#78e5eb' label='Blue' />
+                      <Button onClick={addText} style={{}}>
+                        Add Text
+                      </Button>
+                    </Group>
+                  </Radio.Group>
+                </div>
+              )}
+            />
+          </Paper>
         ) : null}
       </Tabs.Panel>
     );
@@ -92,7 +112,7 @@ const StickerPanel = ({ canvas }) => {
       //charSpacing: -50,
       selectable: true,
       paintFirst: 'stroke',
-      stroke: '#2bf907',
+      stroke: textColor,
       strokeWidth: 4,
       fontFamily: 'MagicInternetMoney',
       //fontFamily: 'WizardFont',
