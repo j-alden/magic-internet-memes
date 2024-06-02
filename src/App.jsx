@@ -9,10 +9,10 @@ import { fabric } from 'fabric';
 
 // Styling
 import '@mantine/core/styles.css';
-import { MantineProvider, AppShell, Title, Image } from '@mantine/core';
+import { MantineProvider, AppShell, Title, Image, Paper } from '@mantine/core';
+import { useDisclosure } from '@mantine/hooks';
 import styled from 'styled-components';
 import { theme } from './theme';
-import { IconWand } from '@tabler/icons-react';
 
 // Custom wizard font
 import './assets/WizardFont.otf';
@@ -24,6 +24,7 @@ import Footer from './components/Footer.jsx';
 import UploadPanel from './components/UploadPanel.jsx';
 import CanvasTools from './components/CanvasTools.jsx';
 import DownloadPanel from './components/DownloadPanel.jsx';
+import UploadStickerPanel from './components/UploadStickerPanel.jsx';
 
 // Styled components
 
@@ -45,6 +46,7 @@ const MAX_IMAGE_DIMENSION = 2048; // Limit the maximum dimension of the image to
 const App = () => {
   const canvasRef = useRef(null); // canvas for UI
   const exportCanvasRef = useRef(null); // canvas for exported image
+  const [opened, { toggle }] = useDisclosure();
 
   const [canvas, setCanvas] = useState(null);
   const [exportCanvas, setExportCanvas] = useState(null);
@@ -175,28 +177,50 @@ const App = () => {
 
   return (
     <MantineProvider defaultColorScheme='auto' theme={theme}>
-      <AppShell padding='md' header={{ height: 100 }}>
+      <AppShell
+        padding='md'
+        header={{ height: 100 }}
+        // navbar={{
+        //   width: 150,
+        //   breakpoint: 'sm',
+        //   collapsed: { mobile: !opened },
+        // }}
+      >
         <Header />
+        {/* <AppShell.Navbar p='md'>
+          <a
+            className={classes.link}
+            data-active={activeLink === link || undefined}
+            href='#'
+            onClick={(event) => {
+              event.preventDefault();
+              setActiveLink(link);
+            }}
+            key={link}
+          >
+            {link}
+          </a>
+        </AppShell.Navbar> */}
+
         <AppShell.Main
           style={{
             marginBottom: '-30px',
           }}
         >
-          <UploadPanel onDrop={onDrop} />
-          <CanvasTools
-            enabled={enableButtons}
-            canvas={canvas}
-            exportCanvas={exportCanvas}
-          />
-          <Container style={{ padding: 0 }}>
-            <StickerPanel canvas={canvas} />
-          </Container>
+          {!enableButtons ? <UploadPanel onDrop={onDrop} /> : null}
+          {enableButtons ? (
+            <DownloadPanel
+              enabled={enableButtons}
+              canvas={canvas}
+              exportCanvas={exportCanvas}
+            />
+          ) : null}
+
+          <StickerPanel canvas={canvas} />
+
+          <CanvasTools enabled={enableButtons} canvas={canvas} />
           <Container>
-            <CanvasWrapper
-            // style={{
-            //   marginBottom: '20px',
-            // }}
-            >
+            <CanvasWrapper>
               {!enableButtons ? (
                 <Title
                   order={2}

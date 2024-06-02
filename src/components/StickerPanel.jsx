@@ -2,8 +2,18 @@ import React, { useState } from 'react';
 import { fabric } from 'fabric';
 import { Tabs } from '@mantine/core';
 import stickers from '../helpers/stickers.js';
+import UploadStickerPanel from './UploadStickerPanel.jsx';
 
-import { Button, Paper, Textarea, Radio, Stack, Group } from '@mantine/core';
+import {
+  Button,
+  Paper,
+  Textarea,
+  Radio,
+  Stack,
+  Group,
+  Text,
+  Title,
+} from '@mantine/core';
 
 // Get sticker categories
 const stickerCategories = [
@@ -122,33 +132,46 @@ const StickerPanel = ({ canvas }) => {
   };
 
   return (
-    <Tabs
-      defaultValue='Faces'
-      styles={{
-        root: {
-          width: '100%',
-          display: 'inline-block',
-          gap: '10px',
-          marginTop: '10px',
-          //height: '150px',
-        },
-        list: {},
-        panel: {
-          cursor: 'pointer',
-          display: 'inline-block',
-          marginTop: '10px',
-        },
-      }}
-    >
-      <Tabs.List>
-        {stickerCategories.map((category) => (
-          <Tabs.Tab value={category} key={category}>
-            {category}
+    <Paper withBorder p='xs' mt='xs'>
+      <Title order={4}>Add Stickers</Title>
+      <Tabs
+        defaultValue='Faces'
+        styles={{
+          root: {
+            width: '100%',
+            display: 'inline-block',
+            gap: '10px',
+            marginTop: '10px',
+            //height: '150px',
+          },
+          list: {},
+          panel: {
+            cursor: 'pointer',
+            display: 'inline-block',
+            marginTop: '10px',
+          },
+        }}
+      >
+        <Tabs.List>
+          {stickerCategories.map((category) => (
+            <Tabs.Tab value={category} key={category}>
+              {category}
+            </Tabs.Tab>
+          ))}
+          <Tabs.Tab value='Upload Custom' key='custom'>
+            Upload Custom
           </Tabs.Tab>
-        ))}
-      </Tabs.List>
-      {stickerCategories.map((category) => displayStickerCategory(category))}
-    </Tabs>
+        </Tabs.List>
+        {stickerCategories.map((category) => displayStickerCategory(category))}
+        <Tabs.Panel value={'Upload Custom'} key='custom'>
+          <Text>
+            Upload an image to use as a sticker. I recommend using a PNG image
+            with background removed.
+          </Text>
+          <UploadStickerPanel canvas={canvas} />
+        </Tabs.Panel>
+      </Tabs>
+    </Paper>
   );
 };
 
