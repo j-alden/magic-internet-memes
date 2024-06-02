@@ -1,5 +1,14 @@
-import React from 'react';
-import { Group, Button, Paper, Title, Slider, Text } from '@mantine/core';
+import React, { useState } from 'react';
+import {
+  Group,
+  Button,
+  Paper,
+  Title,
+  Switch,
+  Slider,
+  Text,
+  Stack,
+} from '@mantine/core';
 import {
   IconTrash,
   IconSwitchHorizontal,
@@ -8,6 +17,8 @@ import {
 } from '@tabler/icons-react';
 
 const CanvasTools = ({ canvas, enabled }) => {
+  const [advancedTools, setAdvancedTools] = useState(false);
+
   // Delete selected sticker
   const deleteActiveObject = () => {
     const activeObject = canvas.getActiveObject();
@@ -51,10 +62,27 @@ const CanvasTools = ({ canvas, enabled }) => {
       canvas.renderAll();
     }
   };
+  const skewObjectY = (value) => {
+    const activeObject = canvas.getActiveObject();
+    if (activeObject) {
+      activeObject.set('skewY', value);
+      canvas.renderAll();
+    }
+  };
 
   return (
     <Paper withBorder p='xs' mt='xs'>
+      <Switch
+        checked={advancedTools}
+        onChange={(event) => setAdvancedTools(event.currentTarget.checked)}
+        label='Advanced Tools'
+        style={{
+          //display: 'inline-block',
+          float: 'right',
+        }}
+      />
       <Title order={4}>Sticker Tools</Title>
+
       <Group>
         <Button
           //onClick={onDeleteObject}
@@ -100,16 +128,32 @@ const CanvasTools = ({ canvas, enabled }) => {
         >
           Send Backward
         </Button>
-        {/* <Slider
-          color='blue'
-          size='sm'
-          min={-50}
-          max={50}
-          defaultValue={0}
-          onChange={(value) => skewObjectX(value)}
-          style={{ width: 200 }}
-        /> */}
       </Group>
+      {advancedTools ? (
+        <Group mt='xs'>
+          <Text>Skew (H)</Text>
+          <Slider
+            color='blue'
+            size='sm'
+            min={-50}
+            max={50}
+            defaultValue={0}
+            onChange={(value) => skewObjectX(value)}
+            style={{ width: 150 }}
+          />
+          <Text>Skew (V)</Text>
+
+          <Slider
+            color='blue'
+            size='sm'
+            min={-50}
+            max={50}
+            defaultValue={0}
+            onChange={(value) => skewObjectY(value)}
+            style={{ width: 150 }}
+          />
+        </Group>
+      ) : null}
     </Paper>
   );
 };

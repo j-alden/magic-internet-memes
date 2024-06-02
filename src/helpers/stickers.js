@@ -49,6 +49,7 @@ let imageSRCs = [
   { file: 'staff-btc.png', category: 'Staffs' },
   //{ file: 'staff-btc2.png', category: 'Staff' },
   { file: 'staff-pill.png', category: 'Staffs' },
+  { file: 'mim-logo.png', category: 'Misc' },
   { file: 'mavenstate.png', category: 'Misc' },
   { file: 'hand.png', category: 'Misc' },
 ];

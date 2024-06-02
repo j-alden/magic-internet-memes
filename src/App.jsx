@@ -46,7 +46,7 @@ const MAX_IMAGE_DIMENSION = 2048; // Limit the maximum dimension of the image to
 const App = () => {
   const canvasRef = useRef(null); // canvas for UI
   const exportCanvasRef = useRef(null); // canvas for exported image
-  const [opened, { toggle }] = useDisclosure();
+  //const [opened, { toggle }] = useDisclosure();
 
   const [canvas, setCanvas] = useState(null);
   const [exportCanvas, setExportCanvas] = useState(null);

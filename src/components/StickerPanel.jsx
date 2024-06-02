@@ -158,12 +158,12 @@ const StickerPanel = ({ canvas }) => {
               {category}
             </Tabs.Tab>
           ))}
-          <Tabs.Tab value='Upload Custom' key='custom'>
-            Upload Custom
+          <Tabs.Tab value='Add Custom' key='custom'>
+            Add Custom
           </Tabs.Tab>
         </Tabs.List>
         {stickerCategories.map((category) => displayStickerCategory(category))}
-        <Tabs.Panel value={'Upload Custom'} key='custom'>
+        <Tabs.Panel value={'Add Custom'} key='custom'>
           <Text>
             Upload an image to use as a sticker. I recommend using a PNG image
             with background removed.
