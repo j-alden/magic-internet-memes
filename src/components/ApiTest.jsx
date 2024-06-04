@@ -3,9 +3,11 @@ import axios from 'axios';
 
 import { Button } from '@mantine/core';
 
+const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
+console.log(apiBaseUrl);
 const getApi = () => {
   axios
-    .get('/api/hello')
+    .get(`${apiBaseUrl}/api/hello`)
     .then((response) => {
       console.log(response.data);
     })
@@ -14,6 +16,7 @@ const getApi = () => {
     });
 };
 
-const ApiTest = () => <Button onClick={getApi}>Test</Button>;
+//const ApiTest = () => <Button onClick={getApi}>Test</Button>;
+const ApiTest = () => <div></div>;
 
 export default ApiTest;
