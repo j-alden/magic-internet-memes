@@ -25,6 +25,7 @@ import UploadPanel from './components/UploadPanel.jsx';
 import CanvasTools from './components/CanvasTools.jsx';
 import DownloadPanel from './components/DownloadPanel.jsx';
 import UploadStickerPanel from './components/UploadStickerPanel.jsx';
+import ApiTest from './components/ApiTest.jsx';
 
 // Styled components
 
@@ -207,6 +208,7 @@ const App = () => {
             marginBottom: '-30px',
           }}
         >
+          <ApiTest />
           {!enableButtons ? <UploadPanel onDrop={onDrop} /> : null}
           {enableButtons ? (
             <DownloadPanel
