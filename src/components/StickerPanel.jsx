@@ -1,9 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import { fabric } from 'fabric';
-import { Tabs } from '@mantine/core';
-import stickers from '../helpers/stickers.js';
-import UploadStickerPanel from './UploadStickerPanel.jsx';
-
 import {
   Button,
   Paper,
@@ -13,16 +10,50 @@ import {
   Group,
   Text,
   Title,
+  Tabs,
 } from '@mantine/core';
+//import stickers from '../helpers/stickers.js';
+import UploadStickerPanel from './UploadStickerPanel.jsx';
+
+const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
 
 // Get sticker categories
-const stickerCategories = [
-  ...new Set(stickers.map((sticker) => sticker.category)),
-];
+// const stickerCategories = [
+//   ...new Set(stickers.map((sticker) => sticker.category)),
+// ];
 
 const StickerPanel = ({ canvas }) => {
   const [inputText, setInputText] = useState(''); // State for the text input
   const [textColor, setTextColor] = useState('#2bf907');
+  const [stickers, setStickers] = useState([]); // stickers to display
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [stickerCategories, setStickerCategories] = useState([]); // stickers to display
+
+  // Initialize Fabric canvas only once
+  useEffect(() => {
+    setLoading(true);
+    async function fetchStickers() {
+      try {
+        const response = await axios.get(
+          `${apiBaseUrl}/api/get-default-stickers`
+        );
+        setStickers(response.data);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchStickers();
+  }, []);
+
+  useEffect(() => {
+    setStickerCategories([
+      ...new Set(stickers.map((sticker) => sticker.category)),
+    ]);
+    console.log(stickerCategories);
+  }, [stickers]);
 
   // Return JSX to display stickers for a given category
   const displayStickerCategory = (category) => {
@@ -34,8 +65,8 @@ const StickerPanel = ({ canvas }) => {
       <Tabs.Panel value={category} key={category}>
         {categoryStickers.map((sticker) => (
           <img
-            key={sticker.id}
-            src={sticker.src}
+            key={sticker.sticker_id}
+            src={sticker.blob_url}
             alt={sticker.name}
             height={
               sticker.category == 'Buttons' || sticker.category == 'Text'
@@ -47,7 +78,7 @@ const StickerPanel = ({ canvas }) => {
                 ? 70
                 : null
             }
-            onClick={() => addSticker(sticker.src)}
+            onClick={() => addSticker(sticker.blob_url)}
           />
         ))}
         {category == 'Text' ? (
@@ -90,25 +121,38 @@ const StickerPanel = ({ canvas }) => {
 
   // Add sticker to canvas
   const addSticker = (src) => {
-    fabric.Image.fromURL(src, (img) => {
-      // Removed sticker scaling for now
-      img.scaleToWidth(125);
-      //img.scaleToHeight(150);
-      img.set({
-        left: 100,
-        top: 100,
-        angle: 0,
-        borderColor: 'red',
-        cornerColor: 'red',
-        cornerSize: 9,
-        transparentCorners: false,
-        hasControls: true,
-        selectable: true,
-        lockScalingFlip: true,
-      });
-      canvas.add(img);
-      canvas.setActiveObject(img);
-    });
+    fabric.Image.fromURL(
+      src,
+      (img) => {
+        // // Hack to avoid
+        // img.setSrc(src, null, {
+        //   crossOrigin: 'anonymous',
+        // });
+
+        // Removed sticker scaling for now
+        img.scaleToWidth(125);
+        //img.scaleToHeight(150);
+        img.set({
+          left: 100,
+          top: 100,
+          angle: 0,
+          borderColor: 'red',
+          cornerColor: 'red',
+          cornerSize: 9,
+          transparentCorners: false,
+          hasControls: true,
+          selectable: true,
+          lockScalingFlip: true,
+        });
+        canvas.add(img);
+        canvas.setActiveObject(img);
+      },
+      // cross origin to anomyous is a hack to get around error
+      // When I switched to pulling from vercel blob store, got CORS error
+      // Should look into updating Access-Control-Allow-Origin
+      // https://stackoverflow.com/questions/31038027/why-does-adding-crossorigin-break-fabric-image-fromurl
+      { crossOrigin: 'anonymous' }
+    );
   };
 
   // Add text to canvas
@@ -131,48 +175,58 @@ const StickerPanel = ({ canvas }) => {
     canvas.setActiveObject(text);
   };
 
-  return (
-    <Paper withBorder p='xs' mt='xs'>
-      <Title order={4}>Add Stickers</Title>
-      <Tabs
-        defaultValue='Faces'
-        styles={{
-          root: {
-            width: '100%',
-            display: 'inline-block',
-            gap: '10px',
-            marginTop: '10px',
-            //height: '150px',
-          },
-          list: {},
-          panel: {
-            cursor: 'pointer',
-            display: 'inline-block',
-            marginTop: '10px',
-          },
-        }}
-      >
-        <Tabs.List>
-          {stickerCategories.map((category) => (
-            <Tabs.Tab value={category} key={category}>
-              {category}
+  if (loading) {
+    return (
+      <Paper withBorder p='xs' mt='xs'>
+        <Title order={4}>Loading Stickers...</Title>
+      </Paper>
+    );
+  } else {
+    return (
+      <Paper withBorder p='xs' mt='xs'>
+        <Title order={4}>Add Stickers</Title>
+        <Tabs
+          defaultValue='Faces'
+          styles={{
+            root: {
+              width: '100%',
+              display: 'inline-block',
+              gap: '10px',
+              marginTop: '10px',
+              //height: '150px',
+            },
+            list: {},
+            panel: {
+              cursor: 'pointer',
+              display: 'inline-block',
+              marginTop: '10px',
+            },
+          }}
+        >
+          <Tabs.List>
+            {stickerCategories.map((category) => (
+              <Tabs.Tab value={category} key={category}>
+                {category}
+              </Tabs.Tab>
+            ))}
+            <Tabs.Tab value='Add Custom' key='custom'>
+              Add Custom
             </Tabs.Tab>
-          ))}
-          <Tabs.Tab value='Add Custom' key='custom'>
-            Add Custom
-          </Tabs.Tab>
-        </Tabs.List>
-        {stickerCategories.map((category) => displayStickerCategory(category))}
-        <Tabs.Panel value={'Add Custom'} key='custom'>
-          <Text>
-            Upload an image to use as a sticker. I recommend using a PNG image
-            with background removed.
-          </Text>
-          <UploadStickerPanel canvas={canvas} />
-        </Tabs.Panel>
-      </Tabs>
-    </Paper>
-  );
+          </Tabs.List>
+          {stickerCategories.map((category) =>
+            displayStickerCategory(category)
+          )}
+          <Tabs.Panel value={'Add Custom'} key='custom'>
+            <Text>
+              Upload an image to use as a sticker. I recommend using a PNG image
+              with background removed.
+            </Text>
+            <UploadStickerPanel canvas={canvas} />
+          </Tabs.Panel>
+        </Tabs>
+      </Paper>
+    );
+  }
 };
 
 export default StickerPanel;
