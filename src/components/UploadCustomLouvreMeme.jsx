@@ -105,7 +105,7 @@ const UploadCustomLouvreMeme = () => {
 
   return (
     <>
-      <Modal opened={opened} onClose={close} title='Upload Meme to the Louvre'>
+      <Modal opened={opened} onClose={close} title='Hang it in the Louvre'>
         <Group>
           <FileButton
             rightSection={<IconPhotoUp size={14} />}
@@ -157,7 +157,7 @@ const UploadCustomLouvreMeme = () => {
       </Modal>
 
       <Button variant='subtle' onClick={open} mb='xs'>
-        Upload Meme
+        Hang Your Meme
       </Button>
     </>
   );
