@@ -1,5 +1,5 @@
 //import { createWriteStream } from 'fs';
-import { v4 as uuidv4 } from 'uuid';
+//import { v4 as uuidv4 } from 'uuid';
 import { put } from '@vercel/blob';
 
 // export const config = {
@@ -8,15 +8,17 @@ import { put } from '@vercel/blob';
 //     },
 //   };
 
-// export const config = {
-//   runtime: 'edge',
-// };
+export const config = {
+  runtime: 'edge',
+};
 
 export default async function upload(request) {
   console.log(request);
+
+  const uuid = crypto.randomUUID();
   const form = await request.formData();
   const file = form.get('file');
-  const filePath = `temp-memes/${uuidv4()}.jpg`;
+  const filePath = `temp-memes/${uuid}.jpg`;
   const blob = await put(filePath, file, { access: 'public' });
 
   return Response.json(blob);
