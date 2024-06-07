@@ -2,9 +2,9 @@ import { copy } from '@vercel/blob';
 import { sql } from '@vercel/postgres';
 import { v4 as uuidv4 } from 'uuid';
 
-export const config = {
-  runtime: 'edge',
-};
+// export const config = {
+//   runtime: 'edge',
+// };
 
 export default async function toVault(req, res) {
   if (req.method !== 'POST') {
