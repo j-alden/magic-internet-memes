@@ -13,12 +13,10 @@ export const config = {
 };
 
 export default async function upload(request) {
-  console.log(request);
-
-  const uuid = crypto.randomUUID();
+  //const uuid = crypto.randomUUID();
   const form = await request.formData();
   const file = form.get('file');
-  const filePath = `temp-memes/${uuid}.jpg`;
+  const filePath = `temp-memes/${'asdfasdf'}.jpg`;
   const blob = await put(filePath, file, { access: 'public' });
 
   return Response.json(blob);
