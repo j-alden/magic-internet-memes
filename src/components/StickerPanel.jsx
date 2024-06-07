@@ -11,9 +11,11 @@ import {
   Text,
   Title,
   Tabs,
+  Switch,
 } from '@mantine/core';
 //import stickers from '../helpers/stickers.js';
 import UploadStickerPanel from './UploadStickerPanel.jsx';
+import UploadCommunitySticker from './UploadCommunitySticker.jsx';
 
 const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
 
@@ -29,15 +31,36 @@ const StickerPanel = ({ canvas }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [stickerCategories, setStickerCategories] = useState([]); // stickers to display
+  const [showCommunityStickers, setShowCommunityStickers] = useState(false);
 
   // Initialize Fabric canvas only once
+  // useEffect(() => {
+  //   setLoading(true);
+  //   async function fetchStickers() {
+  //     try {
+  //       const response = await axios.get(
+  //         `${apiBaseUrl}/api/get-default-stickers`
+  //       );
+  //       setStickers(response.data);
+  //     } catch (err) {
+  //       setError(err.message);
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   }
+  //   fetchStickers();
+  // }, []);
   useEffect(() => {
     setLoading(true);
     async function fetchStickers() {
       try {
-        const response = await axios.get(
-          `${apiBaseUrl}/api/get-default-stickers`
-        );
+        let requestUrl;
+        if (showCommunityStickers) {
+          requestUrl = `${apiBaseUrl}/api/get-all-stickers`;
+        } else {
+          requestUrl = `${apiBaseUrl}/api/get-default-stickers`;
+        }
+        const response = await axios.get(requestUrl);
         setStickers(response.data);
       } catch (err) {
         setError(err.message);
@@ -46,13 +69,12 @@ const StickerPanel = ({ canvas }) => {
       }
     }
     fetchStickers();
-  }, []);
+  }, [showCommunityStickers]);
 
   useEffect(() => {
     setStickerCategories([
       ...new Set(stickers.map((sticker) => sticker.category)),
     ]);
-    console.log(stickerCategories);
   }, [stickers]);
 
   // Return JSX to display stickers for a given category
@@ -184,7 +206,19 @@ const StickerPanel = ({ canvas }) => {
   } else {
     return (
       <Paper withBorder p='xs' mt='xs'>
+        <Switch
+          checked={showCommunityStickers}
+          onChange={(event) =>
+            setShowCommunityStickers(event.currentTarget.checked)
+          }
+          label='Include Community Stickers'
+          style={{
+            //display: 'inline-block',
+            float: 'right',
+          }}
+        />
         <Title order={4}>Add Stickers</Title>
+
         <Tabs
           defaultValue='Faces'
           styles={{
@@ -218,10 +252,11 @@ const StickerPanel = ({ canvas }) => {
           )}
           <Tabs.Panel value={'Add Custom'} key='custom'>
             <Text>
-              Upload an image to use as a sticker. I recommend using a PNG image
-              with background removed.
+              Upload an image to use as a one-off sticker. If you want it to be
+              re-usable, upload to the community below.
             </Text>
             <UploadStickerPanel canvas={canvas} />
+            <UploadCommunitySticker />
           </Tabs.Panel>
         </Tabs>
       </Paper>

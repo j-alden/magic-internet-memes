@@ -1,5 +1,8 @@
 // Converts canvas to blob w/ broader browser support
 import dataURLtoBlob from 'blueimp-canvas-to-blob';
+import axios from 'axios';
+
+const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
 
 // Download the edited image based on device type
 const downloadEditedImage = (canvas, exportCanvas) => {
@@ -12,6 +15,9 @@ const downloadEditedImage = (canvas, exportCanvas) => {
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
+
+    // Trying to upload
+    uploadImageToBlob(blob);
 
     // Open in new tab on mobile, download on desktop
     if (navigator.userAgent.match(/Tablet|iPad/i)) {
@@ -31,6 +37,42 @@ const downloadEditedImage = (canvas, exportCanvas) => {
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
+  }
+};
+
+const saveTempImage = async (canvas, exportCanvas) => {
+  if (exportCanvas) {
+    prepExportCanvas(canvas, exportCanvas);
+
+    // Prep blob to be stored
+    const dataUrl = exportCanvas.toDataURL({ format: 'jpeg', quality: 0.9 });
+    const blob = dataURLtoBlob(dataUrl);
+
+    // Trying to upload
+    const blob_url = await uploadImageToBlob(blob);
+
+    return blob_url;
+  }
+};
+
+const uploadImageToBlob = async (imageBlob) => {
+  const formData = new FormData();
+  formData.append('file', imageBlob, 'edited-image.png');
+
+  try {
+    const response = await axios.post(
+      `${apiBaseUrl}/api/upload-meme`,
+      formData,
+      {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      }
+    );
+    return response.data.url;
+  } catch (error) {
+    console.error('Error uploading image to blob storage', error);
+    throw error;
   }
 };
 
@@ -59,4 +101,4 @@ const prepExportCanvas = (canvas, exportCanvas) => {
   exportCanvas.calcOffset();
 };
 
-export default downloadEditedImage;
+export default saveTempImage;

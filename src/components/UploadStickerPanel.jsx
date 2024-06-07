@@ -40,7 +40,7 @@ const UploadStickerPanel = ({ canvas }) => {
     <div {...getRootProps()}>
       <input {...getInputProps()} />
       <Button rightSection={<IconUpload size={14} />} mt='xs'>
-        Upload Custom Sticker
+        Add One-Off Sticker
       </Button>
     </div>
   );

@@ -8,6 +8,10 @@ const UploadPanel = ({ onDrop }) => {
     onDrop,
     multiple: false,
     accept: 'image/*',
+    // accept: {
+    //   'image/jpeg': ['.jpg', '.jpeg'],
+    //   'image/png': [],
+    // },
   });
 
   return (

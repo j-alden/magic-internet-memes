@@ -3,14 +3,26 @@ import { Button, Paper, Title } from '@mantine/core';
 import { IconWand } from '@tabler/icons-react';
 
 // Helper function
-import downloadEditedImage from '../helpers/downloadEditedImage';
+//import downloadEditedImage from '../helpers/downloadEditedImage';
+import saveTempImage from '../helpers/downloadEditedImage';
 
-const DownloadPanel = ({ canvas, exportCanvas, enabled }) => {
-  const downloadImage = () => {
+const DownloadPanel = ({
+  canvas,
+  exportCanvas,
+  enabled,
+  setUploadedImageUrl,
+  setLoading,
+}) => {
+  const downloadImage = async () => {
+    setLoading(true);
+    const blob_url = await saveTempImage(canvas, exportCanvas);
+    setUploadedImageUrl(blob_url);
+    setLoading(false);
     // axios
     //   .get('https://www.magicinternet.meme/api/hello')
     //   .then((response) => console.log(response));
-    downloadEditedImage(canvas, exportCanvas);
+
+    //downloadEditedImage(canvas, exportCanvas);
   };
 
   return (
@@ -24,7 +36,7 @@ const DownloadPanel = ({ canvas, exportCanvas, enabled }) => {
       disabled={!enabled}
       fullWidth
     >
-      Save Image
+      Generate Image
     </Button>
   );
 };

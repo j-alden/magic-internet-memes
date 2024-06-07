@@ -1,13 +1,6 @@
-// import { useState } from 'react'
-// import reactLogo from './assets/react.svg'
-// import viteLogo from '/vite.svg'
-import './App.css';
-
 // src/App.js
 import React, { useState, useEffect, useRef } from 'react';
 import { fabric } from 'fabric';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-
 // Styling
 import '@mantine/core/styles.css';
 import {
@@ -19,27 +12,21 @@ import {
   LoadingOverlay,
 } from '@mantine/core';
 import styled from 'styled-components';
-import { theme } from './theme';
-
-// Custom wizard font
-import './assets/WizardFont.otf';
 
 // Components
-import Header from './components/Header.jsx';
-import StickerPanel from './components/StickerPanel.jsx';
-import Footer from './components/Footer.jsx';
-import UploadPanel from './components/UploadPanel.jsx';
-import CanvasTools from './components/CanvasTools.jsx';
-import DownloadPanel from './components/DownloadPanel.jsx';
-import UploadStickerPanel from './components/UploadStickerPanel.jsx';
-import ViewMeme from './components/ViewMeme.jsx';
+import Header from '../components/Header.jsx';
+import StickerPanel from '../components/StickerPanel.jsx';
+import Footer from '../components/Footer.jsx';
+import UploadPanel from '../components/UploadPanel.jsx';
+import CanvasTools from '../components/CanvasTools.jsx';
+import DownloadPanel from '../components/DownloadPanel.jsx';
+import UploadStickerPanel from '../components/UploadStickerPanel.jsx';
+import ViewMeme from '../components/ViewMeme.jsx';
 
 // Routing
 import { Outlet } from 'react-router-dom';
-import Louvre from './Pages/Louvre.jsx';
-import Layout from './components/Layout.jsx';
-import CreateMeme from './Pages/CreateMeme.jsx';
-import Leaderboard from './Pages/Leaderboard.jsx';
+import Louvre from './Louvre.jsx';
+import Layout from '../components/Layout.jsx';
 
 // Styled components
 
@@ -55,10 +42,9 @@ const CanvasWrapper = styled.div`
   border: 2px solid #d9d9d9;
   position: relative;
 `;
-
 const MAX_IMAGE_DIMENSION = 2048; // Limit the maximum dimension of the image to 2048px
 
-const App = () => {
+const CreateMeme = () => {
   const canvasRef = useRef(null); // canvas for UI
   const exportCanvasRef = useRef(null); // canvas for exported image
   //const [opened, { toggle }] = useDisclosure();
@@ -191,23 +177,9 @@ const App = () => {
 
     return scaleFactor;
   };
-
-  console.log(uploadedImageUrl);
   if (uploadedImageUrl) {
     return (
-      <MantineProvider defaultColorScheme='auto' theme={theme}>
-        <AppShell padding='md' header={{ height: 120 }}>
-          <Header />
-          <AppShell.Main
-            style={{
-              marginBottom: '-30px',
-            }}
-          >
-            <ViewMeme uploadedImageUrl={uploadedImageUrl} />
-          </AppShell.Main>
-          <Footer />
-        </AppShell>
-      </MantineProvider>
+      <ViewMeme uploadedImageUrl={uploadedImageUrl} />
 
       // <Router>
       //   <Routes>
@@ -225,72 +197,47 @@ const App = () => {
     );
   } else {
     return (
-      <MantineProvider defaultColorScheme='auto' theme={theme}>
-        <AppShell padding='md' header={{ height: 120 }}>
-          <Router>
-            <Header />
-            <AppShell.Main
-              style={{
-                marginBottom: '-30px',
-              }}
-            >
-              <Routes>
-                <Route
-                  path='/'
-                  element={uploadedImageUrl ? <ViewMeme /> : <CreateMeme />}
+      <>
+        <LoadingOverlay
+          visible={loading}
+          zIndex={1000}
+          overlayProps={{ radius: 'sm', blur: 2 }}
+        />
+        {!enableButtons ? <UploadPanel onDrop={onDrop} /> : null}
+        {enableButtons ? (
+          <DownloadPanel
+            enabled={enableButtons}
+            canvas={canvas}
+            exportCanvas={exportCanvas}
+            setUploadedImageUrl={setUploadedImageUrl}
+            setLoading={setLoading}
+          />
+        ) : null}
+        <StickerPanel canvas={canvas} />
+        <CanvasTools enabled={enableButtons} canvas={canvas} />
+        <Container>
+          <CanvasWrapper>
+            {!enableButtons ? (
+              <Title
+                order={2}
+                style={{ margin: '20px', alignContent: 'center' }}
+              >
+                Upload image to start the magic
+                {/* <IconWand /> */}
+                <Image
+                  src='/ogwizzybare_grayscale.png'
+                  mah='200px'
+                  //maw='50%'
+                  fit='contain'
+                  style={{ margin: 20 }}
                 />
-                <Route path='/louvre' element={<Louvre />} />
-                {/* <Route index element={<CreateMeme />} /> */}
-                <Route path='/create' element={<CreateMeme />} />
-                <Route path='/leaderboard' element={<Leaderboard />} />
-              </Routes>
-            </AppShell.Main>
-          </Router>
-          <Footer />
-        </AppShell>
-      </MantineProvider>
-
-      // <LoadingOverlay
-      //   visible={loading}
-      //   zIndex={1000}
-      //   overlayProps={{ radius: 'sm', blur: 2 }}
-      // />
-      // {!enableButtons ? <UploadPanel onDrop={onDrop} /> : null}
-      // {enableButtons ? (
-      //   <DownloadPanel
-      //     enabled={enableButtons}
-      //     canvas={canvas}
-      //     exportCanvas={exportCanvas}
-      //     setUploadedImageUrl={setUploadedImageUrl}
-      //     setLoading={setLoading}
-      //   />
-      // ) : null}
-
-      // <StickerPanel canvas={canvas} />
-      // <CanvasTools enabled={enableButtons} canvas={canvas} />
-      // <Container>
-      //   <CanvasWrapper>
-      //     {!enableButtons ? (
-      //       <Title
-      //         order={2}
-      //         style={{ margin: '20px', alignContent: 'center' }}
-      //       >
-      //         Upload image to start the magic
-      //         {/* <IconWand /> */}
-      //         <Image
-      //           src='/ogwizzybare_grayscale.png'
-      //           mah='200px'
-      //           //maw='50%'
-      //           fit='contain'
-      //           style={{ margin: 20 }}
-      //         />
-      //       </Title>
-      //     ) : null}
-      //     <canvas ref={canvasRef} id='canvas' />
-      //   </CanvasWrapper>
-      // </Container>
+              </Title>
+            ) : null}
+            <canvas ref={canvasRef} id='canvas' />
+          </CanvasWrapper>
+        </Container>
+      </>
     );
   }
 };
-
-export default App;
+export default CreateMeme;
