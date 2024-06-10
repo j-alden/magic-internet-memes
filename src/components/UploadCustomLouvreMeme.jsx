@@ -159,7 +159,7 @@ const UploadCustomLouvreMeme = () => {
       </Modal>
 
       <Button variant='outline' onClick={open}>
-        Hang Your Meme
+        Add Meme
       </Button>
     </>
   );
