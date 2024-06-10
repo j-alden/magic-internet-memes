@@ -46,13 +46,15 @@ const ViewMeme = ({ uploadedImageUrl, editedBlob }) => {
           wrap='wrap'
         >
           <Stack maw='100%'>
-            <Image
-              src={blob_url}
-              w='auto'
-              maw='100%'
-              mah='100%'
-              fit='contain'
-            />
+            <Anchor href={blob_url} target='_blank'>
+              <Image
+                src={blob_url}
+                w='auto'
+                maw='100%'
+                mah='100%'
+                fit='contain'
+              />
+            </Anchor>
             <Anchor
               href={blob_url}
               download={'edited-meme.jpg'}
