@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Paper, Title, Table, Group } from '@mantine/core';
+import { IconChartBar } from '@tabler/icons-react';
 
 const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
 
 const Leaderboard = () => {
   const [stickerLeaders, setStickerLeaders] = useState([]);
   const [louvreLeaders, setLouvreLeaders] = useState([]);
+  const [voteLeaders, setVoteLeaders] = useState([]);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
 
@@ -18,7 +20,6 @@ const Leaderboard = () => {
           `${apiBaseUrl}/api/get-sticker-leaders`
         );
         setStickerLeaders(response.data);
-        console.log(stickerLeaders);
       } catch (err) {
         console.log(err);
         setError(err.message);
@@ -37,7 +38,6 @@ const Leaderboard = () => {
           `${apiBaseUrl}/api/get-louvre-leaders`
         );
         setLouvreLeaders(response.data);
-        console.log(louvreLeaders);
       } catch (err) {
         console.log(err);
         setError(err.message);
@@ -48,8 +48,27 @@ const Leaderboard = () => {
     fetchLouvreLeaders();
   }, []);
 
-  const stickerRows = stickerLeaders.map((element) => (
+  useEffect(() => {
+    setLoading(true);
+    async function fetchVoteLeaders() {
+      try {
+        const response = await axios.get(
+          `${apiBaseUrl}/api/leaderboard-get-louvre-votes`
+        );
+        setVoteLeaders(response.data);
+      } catch (err) {
+        console.log(err);
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchVoteLeaders();
+  }, []);
+
+  const stickerRows = stickerLeaders.map((element, index) => (
     <Table.Tr key={element.created_by}>
+      <Table.Td>{index + 1}</Table.Td>
       <Table.Td>
         {element.created_by == '' ? 'Satoshi Nakamoto' : element.created_by}
       </Table.Td>
@@ -59,8 +78,9 @@ const Leaderboard = () => {
     </Table.Tr>
   ));
 
-  const louvreRows = louvreLeaders.map((element) => (
-    <Table.Tr key={element.created_by}>
+  const louvreRows = louvreLeaders.map((element, index) => (
+    <Table.Tr key={element.index}>
+      <Table.Td>{index + 1}</Table.Td>
       <Table.Td>
         {element.created_by == '' ? 'Satoshi Nakamoto' : element.created_by}
       </Table.Td>
@@ -70,30 +90,71 @@ const Leaderboard = () => {
     </Table.Tr>
   ));
 
+  const voteRows = voteLeaders.map((element, index) => (
+    <Table.Tr key={element.index}>
+      <Table.Td>{index + 1}</Table.Td>
+      <Table.Td>
+        {element.created_by == '' ? 'Satoshi Nakamoto' : element.created_by}
+      </Table.Td>
+      <Table.Td>{element.meme_votes}</Table.Td>
+      {/* <Table.Td>{element.symbol}</Table.Td>
+      <Table.Td>{element.mass}</Table.Td> */}
+    </Table.Tr>
+  ));
+
   if (loading) {
-    return <Title>Loading Leaderboard</Title>;
+    return <Title align='center'>Loading Leaderboard</Title>;
   } else if (error) {
-    return <Title>Error loading Leaderboard</Title>;
+    return <Title align='center'>Error loading Leaderboard</Title>;
   }
   {
     return (
       <div>
+        <Group justify='center' align='center'>
+          <Title>Leaderboard</Title>
+          <IconChartBar size={35} />
+        </Group>
+
         <Paper withBorder p='md' m='md'>
           <Title order={2} mb='sm'>
             The Louvre Leaderboard
           </Title>
-          <Table>
-            <Table.Thead>
-              <Table.Tr>
-                <Table.Th>Created By</Table.Th>
-                <Table.Th>Memes Created</Table.Th>
-                {/* <Table.Th></Table.Th>
+
+          <Group m='xs'>
+            {' '}
+            <Paper withBorder p='sm'>
+              <Title order={6}>Meme Reactions</Title>
+              <Table>
+                <Table.Thead>
+                  <Table.Tr>
+                    <Table.Th>Rank</Table.Th>
+                    <Table.Th>Created By</Table.Th>
+                    <Table.Th>Reactions</Table.Th>
+                    {/* <Table.Th></Table.Th>
               <Table.Th></Table.Th> */}
-              </Table.Tr>
-            </Table.Thead>
-            <Table.Tbody>{louvreRows}</Table.Tbody>
-          </Table>
+                  </Table.Tr>
+                </Table.Thead>
+                <Table.Tbody>{voteRows}</Table.Tbody>
+              </Table>
+            </Paper>
+            <Paper withBorder p='sm'>
+              <Title order={6}>Memes Created</Title>
+              <Table>
+                <Table.Thead>
+                  <Table.Tr>
+                    <Table.Th>Rank</Table.Th>
+                    <Table.Th>Created By</Table.Th>
+                    <Table.Th>Created</Table.Th>
+                    {/* <Table.Th></Table.Th>
+              <Table.Th></Table.Th> */}
+                  </Table.Tr>
+                </Table.Thead>
+                <Table.Tbody>{louvreRows}</Table.Tbody>
+              </Table>
+            </Paper>
+          </Group>
         </Paper>
+
         <Paper withBorder p='md' m='md'>
           <Title order={2} mb='sm'>
             Sticker Leaderboard
@@ -101,6 +162,7 @@ const Leaderboard = () => {
           <Table>
             <Table.Thead>
               <Table.Tr>
+                <Table.Th>Rank</Table.Th>
                 <Table.Th>Created By</Table.Th>
                 <Table.Th>Stickers Created</Table.Th>
                 {/* <Table.Th></Table.Th>

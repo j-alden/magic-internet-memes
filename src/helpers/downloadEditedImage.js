@@ -47,11 +47,8 @@ const saveTempImage = async (canvas, exportCanvas) => {
     // Prep blob to be stored
     const dataUrl = exportCanvas.toDataURL({ format: 'jpeg', quality: 0.9 });
     const blob = dataURLtoBlob(dataUrl);
-
-    // Trying to upload
-    const blob_url = await uploadImageToBlob(blob);
-
-    return blob_url;
+    //const url = URL.createObjectURL(blob);
+    return blob;
   }
 };
 

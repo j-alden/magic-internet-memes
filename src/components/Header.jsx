@@ -9,7 +9,7 @@ import {
   Anchor,
   Tabs,
 } from '@mantine/core';
-import { IconHome2, IconGauge, IconChevronRight } from '@tabler/icons-react';
+import { IconWand, IconPhoto, IconChartBar } from '@tabler/icons-react';
 import { NavLink } from 'react-router-dom';
 
 const Header = () => {
@@ -44,14 +44,21 @@ const Header = () => {
           // }}
         >
           <Tabs.List>
-            <Tabs.Tab value='create' key='create' component={NavLink} to=''>
-              Create Meme
+            <Tabs.Tab
+              value='create'
+              key='create'
+              component={NavLink}
+              to=''
+              rightSection={<IconWand size={14} />}
+            >
+              Create
             </Tabs.Tab>
             <Tabs.Tab
               value='louvre'
               key='louvre'
               component={NavLink}
               to='louvre'
+              rightSection={<IconPhoto size={14} />}
             >
               The Louvre
             </Tabs.Tab>
@@ -60,6 +67,7 @@ const Header = () => {
               key='leaderboard'
               component={NavLink}
               to='leaderboard'
+              rightSection={<IconChartBar size={14} />}
             >
               Leaderboard
             </Tabs.Tab>

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Anchor,
   Title,
@@ -18,14 +18,16 @@ import {
 } from '@tabler/icons-react';
 import UploadToVaultForm from './UploadToVaultForm';
 
-const ViewMeme = ({ uploadedImageUrl }) => {
+const ViewMeme = ({ uploadedImageUrl, editedBlob }) => {
+  const blob_url = URL.createObjectURL(editedBlob); // url to display image
+
   const resetImage = () => {
     //setUploadedImageUrl(null);
     //setEnableButtons(false);
     window.location.reload(); // Refresh page to restart
   };
 
-  if (uploadedImageUrl) {
+  if (blob_url) {
     return (
       <Paper>
         <Button
@@ -45,26 +47,32 @@ const ViewMeme = ({ uploadedImageUrl }) => {
         >
           <Stack maw='100%'>
             <Image
-              src={uploadedImageUrl}
+              src={blob_url}
               w='auto'
               maw='100%'
               mah='100%'
               fit='contain'
             />
-            <Button //onClick={onDownload}
-              //onClick={downloadImage}
-              rightSection={<IconPhotoDown size={14} />}
-              //mt='xs'
-              //variant='outline'
-              //disabled={!enabled}
-              fullWidth
-              href={`${uploadedImageUrl}?download=1`}
-              component='a'
+            <Anchor
+              href={blob_url}
+              download={'edited-meme.jpg'}
+              underline='never'
             >
-              Download Image
-            </Button>
+              <Button //onClick={onDownload}
+                //onClick={downloadImage}
+                rightSection={<IconPhotoDown size={14} />}
+                //mt='xs'
+                //variant='outline'
+                //disabled={!enabled}
+                fullWidth
+                // href={`${uploadedImageUrl}?download=1`}
+                // component='a'
+              >
+                Download Image
+              </Button>
+            </Anchor>
           </Stack>
-          <UploadToVaultForm uploadedImageUrl={uploadedImageUrl} />
+          <UploadToVaultForm blob={editedBlob} blob_url={blob_url} />
         </Flex>
       </Paper>
       // <Paper withBorder p='sm' m='sm'>

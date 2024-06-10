@@ -21,7 +21,7 @@ import axios from 'axios';
 import { Link } from 'react-router-dom';
 const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
 
-const UploadtoVaultForm = ({ uploadedImageUrl }) => {
+const UploadtoVaultForm = ({ blob, blob_url }) => {
   const [visible, { toggle }] = useDisclosure(false);
   const [showLoader, setShowLoader] = useState(false);
   const [imageUploaded, setImageUploaded] = useState(false);
@@ -44,15 +44,17 @@ const UploadtoVaultForm = ({ uploadedImageUrl }) => {
 
   const uploadToLouvre = async (formValues) => {
     setShowLoader(true); // make loader visible
-    console.log(formValues);
+
     const formData = new FormData();
-    formData.append('blob_url', uploadedImageUrl);
+    formData.append('file', blob, 'edited-image.png');
+    formData.append('blob_url', blob_url);
     formData.append('title', formValues.title);
     formData.append('createdBy', formValues.createdBy);
 
     try {
       const response = await axios.post(
-        `${apiBaseUrl}/api/copy-to-vault`,
+        // `${apiBaseUrl}/api/copy-to-vault`,
+        `${apiBaseUrl}/api/upload-to-vault`,
         formData,
         {
           headers: {
@@ -62,7 +64,6 @@ const UploadtoVaultForm = ({ uploadedImageUrl }) => {
       );
       setShowLoader(false); // disable loader
       setImageUploaded(true);
-      console.log(response.data);
       return response.data;
     } catch (error) {
       setUploadError(error);

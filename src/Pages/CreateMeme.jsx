@@ -53,6 +53,7 @@ const CreateMeme = () => {
   const [exportCanvas, setExportCanvas] = useState(null);
   const [enableButtons, setEnableButtons] = useState(false);
   const [uploadedImageUrl, setUploadedImageUrl] = useState(null);
+  const [editedBlob, setEditedBlob] = useState(null);
   const [loading, setLoading] = useState(false);
 
   // Initialize Fabric canvas only once
@@ -177,24 +178,8 @@ const CreateMeme = () => {
 
     return scaleFactor;
   };
-  if (uploadedImageUrl) {
-    return (
-      <ViewMeme uploadedImageUrl={uploadedImageUrl} />
-
-      // <Router>
-      //   <Routes>
-      //     {/* <Route path='/' element={<Layout />}>
-      //       <Route index element={<CreateMeme />} />
-      //       <Route path='/create' element={<CreateMeme />} />
-      //       <Route path='louvre' element={<Louvre />} />
-      //     </Route> */}
-      //     <Route path='/' element={<CreateMeme />} />
-      //     <Route path='/louvre' element={<Louvre />} />
-      //     {/* <Route index element={<CreateMeme />} /> */}
-      //     <Route path='/create' element={<CreateMeme />} />
-      //   </Routes>
-      // </Router>
-    );
+  if (editedBlob) {
+    return <ViewMeme editedBlob={editedBlob} />;
   } else {
     return (
       <>
@@ -211,6 +196,7 @@ const CreateMeme = () => {
             exportCanvas={exportCanvas}
             setUploadedImageUrl={setUploadedImageUrl}
             setLoading={setLoading}
+            setEditedBlob={setEditedBlob}
           />
         ) : null}
         <StickerPanel canvas={canvas} />

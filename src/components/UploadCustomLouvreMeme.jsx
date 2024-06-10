@@ -47,7 +47,7 @@ const UploadCustomLouvreMeme = () => {
     // },
   });
 
-  const uploadTemptToLouvre = async (uploadedFile) => {
+  const uploadTempToLouvre = async (uploadedFile) => {
     setMemeUploadLoader(true);
     console.log(uploadedFile);
     const formData = new FormData();
@@ -100,6 +100,8 @@ const UploadCustomLouvreMeme = () => {
       console.error('Error uploading image to blob storage', error);
       setShowLoader(false); // disable loader
       throw error;
+    } finally {
+      form.reset();
     }
   };
 
@@ -109,11 +111,11 @@ const UploadCustomLouvreMeme = () => {
         <Group>
           <FileButton
             rightSection={<IconPhotoUp size={14} />}
-            onChange={uploadTemptToLouvre}
+            onChange={uploadTempToLouvre}
             // accept='image/png,image/jpeg'
-            accept='image/jpeg'
+            accept='image/png,image/jpeg, image/gif, image/tiff, image/bmp, image/webp'
           >
-            {(props) => <Button {...props}>Select Image (JPG)</Button>}
+            {(props) => <Button {...props}>Select Image</Button>}
           </FileButton>
           {memeUploadLoader ? <Loader /> : null}
           {memeUploaded ? <Text>Meme seems legit...</Text> : null}
@@ -156,7 +158,7 @@ const UploadCustomLouvreMeme = () => {
         </form>
       </Modal>
 
-      <Button variant='subtle' onClick={open} mb='xs'>
+      <Button variant='outline' onClick={open}>
         Hang Your Meme
       </Button>
     </>

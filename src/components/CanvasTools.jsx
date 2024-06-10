@@ -81,7 +81,7 @@ const CanvasTools = ({ canvas, enabled }) => {
           float: 'right',
         }}
       />
-      <Title order={4}>Sticker Tools</Title>
+      <Title order={3}>Sticker Tools</Title>
 
       <Group>
         <Button

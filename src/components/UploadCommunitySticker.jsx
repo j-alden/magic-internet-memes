@@ -43,6 +43,7 @@ const UploadCommunitySticker = () => {
   const [uploadError, setUploadError] = useState(false);
   const [stickerBlob, setStickerBlob] = useState(null);
   const [stickerUploaded, setStickerUploaded] = useState(false);
+  const [finalLoader, setFinalLoader] = useState(false);
   const [finalUpload, setFinalUpload] = useState(false);
   const [category, setCategory] = useState(null);
 
@@ -83,6 +84,7 @@ const UploadCommunitySticker = () => {
   }, [file]);
 
   const uploadSticker = async (formValues) => {
+    setFinalLoader(true);
     const formData = new FormData();
     formData.append('blob_url', stickerBlob.url);
     formData.append('name', formValues.name);
@@ -106,7 +108,7 @@ const UploadCommunitySticker = () => {
       console.log(err);
       //setError(err.message);
     } finally {
-      //setLoading(false);
+      setFinalLoader(false);
     }
   };
 
@@ -214,6 +216,7 @@ const UploadCommunitySticker = () => {
           </Combobox>
 
           <Group justify='flex-end' mt='md'>
+            {finalLoader ? <Loader /> : null}
             {finalUpload ? <Text>Sticker added!</Text> : null}
             <Button
               type='submit'

@@ -67,6 +67,7 @@ const App = () => {
   const [exportCanvas, setExportCanvas] = useState(null);
   const [enableButtons, setEnableButtons] = useState(false);
   const [uploadedImageUrl, setUploadedImageUrl] = useState(null);
+  const [editedBlob, setEditedBlob] = useState(null);
   const [loading, setLoading] = useState(false);
 
   // Initialize Fabric canvas only once
@@ -192,8 +193,8 @@ const App = () => {
     return scaleFactor;
   };
 
-  console.log(uploadedImageUrl);
-  if (uploadedImageUrl) {
+  console.log(editedBlob);
+  if (editedBlob) {
     return (
       <MantineProvider defaultColorScheme='auto' theme={theme}>
         <AppShell padding='md' header={{ height: 120 }}>
@@ -203,25 +204,11 @@ const App = () => {
               marginBottom: '-30px',
             }}
           >
-            <ViewMeme uploadedImageUrl={uploadedImageUrl} />
+            <ViewMeme editedBlob={editedBlob} />
           </AppShell.Main>
           <Footer />
         </AppShell>
       </MantineProvider>
-
-      // <Router>
-      //   <Routes>
-      //     {/* <Route path='/' element={<Layout />}>
-      //       <Route index element={<CreateMeme />} />
-      //       <Route path='/create' element={<CreateMeme />} />
-      //       <Route path='louvre' element={<Louvre />} />
-      //     </Route> */}
-      //     <Route path='/' element={<CreateMeme />} />
-      //     <Route path='/louvre' element={<Louvre />} />
-      //     {/* <Route index element={<CreateMeme />} /> */}
-      //     <Route path='/create' element={<CreateMeme />} />
-      //   </Routes>
-      // </Router>
     );
   } else {
     return (
@@ -237,7 +224,7 @@ const App = () => {
               <Routes>
                 <Route
                   path='/'
-                  element={uploadedImageUrl ? <ViewMeme /> : <CreateMeme />}
+                  element={editedBlob ? <ViewMeme /> : <CreateMeme />}
                 />
                 <Route path='/louvre' element={<Louvre />} />
                 {/* <Route index element={<CreateMeme />} /> */}
@@ -249,46 +236,6 @@ const App = () => {
           <Footer />
         </AppShell>
       </MantineProvider>
-
-      // <LoadingOverlay
-      //   visible={loading}
-      //   zIndex={1000}
-      //   overlayProps={{ radius: 'sm', blur: 2 }}
-      // />
-      // {!enableButtons ? <UploadPanel onDrop={onDrop} /> : null}
-      // {enableButtons ? (
-      //   <DownloadPanel
-      //     enabled={enableButtons}
-      //     canvas={canvas}
-      //     exportCanvas={exportCanvas}
-      //     setUploadedImageUrl={setUploadedImageUrl}
-      //     setLoading={setLoading}
-      //   />
-      // ) : null}
-
-      // <StickerPanel canvas={canvas} />
-      // <CanvasTools enabled={enableButtons} canvas={canvas} />
-      // <Container>
-      //   <CanvasWrapper>
-      //     {!enableButtons ? (
-      //       <Title
-      //         order={2}
-      //         style={{ margin: '20px', alignContent: 'center' }}
-      //       >
-      //         Upload image to start the magic
-      //         {/* <IconWand /> */}
-      //         <Image
-      //           src='/ogwizzybare_grayscale.png'
-      //           mah='200px'
-      //           //maw='50%'
-      //           fit='contain'
-      //           style={{ margin: 20 }}
-      //         />
-      //       </Title>
-      //     ) : null}
-      //     <canvas ref={canvasRef} id='canvas' />
-      //   </CanvasWrapper>
-      // </Container>
     );
   }
 };

@@ -16,6 +16,7 @@ import {
 //import stickers from '../helpers/stickers.js';
 import UploadStickerPanel from './UploadStickerPanel.jsx';
 import UploadCommunitySticker from './UploadCommunitySticker.jsx';
+import CreateStickerModal from './CreateStickerModal.jsx';
 
 const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
 
@@ -200,24 +201,30 @@ const StickerPanel = ({ canvas }) => {
   if (loading) {
     return (
       <Paper withBorder p='xs' mt='xs'>
-        <Title order={4}>Loading Stickers...</Title>
+        <Title order={3}>Loading Stickers...</Title>
       </Paper>
     );
   } else {
     return (
       <Paper withBorder p='xs' mt='xs'>
-        <Switch
-          checked={showCommunityStickers}
-          onChange={(event) =>
-            setShowCommunityStickers(event.currentTarget.checked)
-          }
-          label='Include Community Stickers'
-          style={{
-            //display: 'inline-block',
-            float: 'right',
-          }}
-        />
-        <Title order={4}>Add Stickers</Title>
+        <Group justify='space-between'>
+          <Group>
+            <Title order={3}>Choose Stickers</Title>
+            <CreateStickerModal stickerCategories={stickerCategories} />
+          </Group>
+
+          <Switch
+            checked={showCommunityStickers}
+            onChange={(event) =>
+              setShowCommunityStickers(event.currentTarget.checked)
+            }
+            label='Include Community Stickers'
+            // style={{
+            //   //display: 'inline-block',
+            //   float: 'right',
+            // }}
+          />
+        </Group>
 
         <Tabs
           defaultValue='Faces'
@@ -256,7 +263,7 @@ const StickerPanel = ({ canvas }) => {
               re-usable, upload to the community below.
             </Text>
             <UploadStickerPanel canvas={canvas} />
-            <UploadCommunitySticker />
+            {/* <UploadCommunitySticker /> */}
           </Tabs.Panel>
         </Tabs>
       </Paper>
