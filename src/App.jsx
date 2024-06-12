@@ -18,9 +18,9 @@ import ViewMeme from './components/ViewMeme.jsx';
 
 // Routing
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Louvre from './pages/Louvre.jsx';
-import CreateMeme from './pages/CreateMeme.jsx';
-import Leaderboard from './pages/Leaderboard.jsx';
+import Louvre from './Pages/Louvre.jsx';
+import CreateMeme from './Pages/CreateMeme.jsx';
+import Leaderboard from './Pages/Leaderboard.jsx';
 
 // React Query
 import { useGetMemes } from './hooks/useGetMemes.js';
