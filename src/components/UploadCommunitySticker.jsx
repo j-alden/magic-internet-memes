@@ -1,26 +1,21 @@
 import React, { useEffect, useState } from 'react';
 import {
   Button,
-  Checkbox,
   Group,
   Stack,
   TextInput,
-  rem,
   Title,
   Text,
   Paper,
-  Image,
   Loader,
   FileButton,
   Combobox,
   Input,
   InputBase,
   useCombobox,
-  FileInput,
 } from '@mantine/core';
 import { useForm } from '@mantine/form';
-import { useDisclosure } from '@mantine/hooks';
-import { IconAt, IconPhoto, IconPhotoUp } from '@tabler/icons-react';
+import { IconPhotoUp } from '@tabler/icons-react';
 import axios from 'axios';
 
 const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;

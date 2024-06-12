@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 import { fabric } from 'fabric';
 import {
   Button,
@@ -15,13 +14,10 @@ import {
 } from '@mantine/core';
 //import stickers from '../helpers/stickers.js';
 import UploadStickerPanel from './UploadStickerPanel.jsx';
-import UploadCommunitySticker from './UploadCommunitySticker.jsx';
 import CreateStickerModal from './CreateStickerModal.jsx';
 
 // React query
 import { useGetStickers } from '../hooks/useGetStickers.js';
-
-const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
 
 // Get sticker categories
 // const stickerCategories = [

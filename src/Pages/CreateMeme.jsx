@@ -27,6 +27,7 @@ import ViewMeme from '../components/ViewMeme.jsx';
 import { Outlet } from 'react-router-dom';
 import Louvre from './Louvre.jsx';
 import Layout from '../components/Layout.jsx';
+import UploadImage from '../components/UploadImage.jsx';
 
 // Styled components
 
@@ -94,7 +95,10 @@ const CreateMeme = () => {
 
   const onDrop = (acceptedFiles) => {
     const reader = new FileReader();
-    const file = acceptedFiles[0];
+
+    console.log(acceptedFiles);
+    //const file = acceptedFiles[0];
+    const file = acceptedFiles;
 
     reader.onload = (e) => {
       // Maintain larger canvas in background for higher quality image download
@@ -188,7 +192,8 @@ const CreateMeme = () => {
           zIndex={1000}
           overlayProps={{ radius: 'sm', blur: 2 }}
         />
-        {!enableButtons ? <UploadPanel onDrop={onDrop} /> : null}
+        {/* {!enableButtons ? <UploadPanel onDrop={onDrop} /> : null} */}
+        {!enableButtons ? <UploadImage onDrop={onDrop} /> : null}
         {enableButtons ? (
           <DownloadPanel
             enabled={enableButtons}

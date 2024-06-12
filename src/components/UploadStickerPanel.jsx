@@ -1,12 +1,13 @@
 import React from 'react';
 import { Button } from '@mantine/core';
 import { IconUpload } from '@tabler/icons-react';
-import { useDropzone } from 'react-dropzone';
+import { FileButton } from '@mantine/core';
 
 const UploadStickerPanel = ({ canvas }) => {
   const onDropSticker = (acceptedFiles) => {
     const reader = new FileReader();
-    const file = acceptedFiles[0];
+    //const file = acceptedFiles[0];
+    const file = acceptedFiles;
 
     reader.onload = (e) => {
       fabric.Image.fromURL(e.target.result, (img) => {
@@ -30,19 +31,21 @@ const UploadStickerPanel = ({ canvas }) => {
     reader.readAsDataURL(file);
   };
 
-  const { getRootProps, getInputProps } = useDropzone({
-    onDrop: onDropSticker,
-    multiple: false,
-    accept: 'image/*',
-  });
-
   return (
-    <div {...getRootProps()}>
-      <input {...getInputProps()} />
-      <Button rightSection={<IconUpload size={14} />} mt='xs'>
-        Add One-Off Sticker
-      </Button>
-    </div>
+    <FileButton onChange={onDropSticker} accept='image/*'>
+      {(props) => (
+        <Button {...props} mt='xs' rightSection={<IconUpload size={14} />}>
+          Upload One-Off Sticker
+        </Button>
+      )}
+    </FileButton>
+
+    // <div {...getRootProps()}>
+    //   <input {...getInputProps()} />
+    //   <Button rightSection={<IconUpload size={14} />} mt='xs'>
+    //     Add One-Off Sticker
+    //   </Button>
+    // </div>
   );
 };
 
