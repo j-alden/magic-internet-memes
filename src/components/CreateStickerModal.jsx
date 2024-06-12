@@ -26,9 +26,7 @@ const CreateStickerModal = ({ stickerCategories }) => {
   const [opened, { open, close }] = useDisclosure(false);
   const [uploadError, setUploadError] = useState(false);
   const [finalLoader, setFinalLoader] = useState(false);
-
   const [finalUpload, setFinalUpload] = useState(false);
-  const [error, setError] = useState(null);
   const [file, setFile] = useState(null);
   const [stickerUploadLoader, setStickerUploadLoader] = useState(false);
   const [stickerBlob, setStickerBlob] = useState(null);
@@ -155,14 +153,6 @@ const CreateStickerModal = ({ stickerCategories }) => {
           </Group>
 
           <form onSubmit={form.onSubmit((values) => uploadSticker(values))}>
-            {/* <FileInput
-            accept='image/png,image/jpeg'
-            label='Upload files'
-            placeholder='Upload files'
-            onChange={setFile}
-            key={form.key('file')}
-            {...form.getInputProps('file')}
-          /> */}
             <TextInput
               required
               label='Sticker Name'

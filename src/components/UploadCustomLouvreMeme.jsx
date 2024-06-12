@@ -1,17 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
-  MantineProvider,
-  AppShell,
-  Paper,
-  LoadingOverlay,
-  Title,
   Button,
-  Image,
   Text,
-  Card,
-  Anchor,
   Group,
-  Flex,
   Modal,
   TextInput,
   FileButton,
@@ -21,7 +12,7 @@ import { Link } from 'react-router-dom';
 import { useDisclosure } from '@mantine/hooks';
 import { useForm } from '@mantine/form';
 import axios from 'axios';
-import { IconAt, IconPhoto, IconPhotoUp } from '@tabler/icons-react';
+import { IconPhotoUp } from '@tabler/icons-react';
 
 const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
 
@@ -37,14 +28,6 @@ const UploadCustomLouvreMeme = () => {
 
   const form = useForm({
     mode: 'uncontrolled',
-    initialValues: {
-      //   title: 'Hearing Things',
-      //   termsOfService: false,
-      //createdBy: 'buy',
-    },
-    // validate: {
-    //   email: (value) => (/^\S+@\S+$/.test(value) ? null : 'Invalid email'),
-    // },
   });
 
   const uploadTempToLouvre = async (uploadedFile) => {

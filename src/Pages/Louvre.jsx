@@ -11,6 +11,11 @@ import {
   Flex,
   TextInput,
   Stack,
+  Combobox,
+  InputBase,
+  useCombobox,
+  Select,
+  Box,
 } from '@mantine/core';
 import { Link } from 'react-router-dom';
 import UploadCustomLouvreMeme from '../components/UploadCustomLouvreMeme';
@@ -20,46 +25,30 @@ import LikeButton from '../components/LikeButton';
 import { useGetMemes } from '../hooks/useGetMemes';
 
 const Louvre = () => {
-  const [images, setImages] = useState([]);
-  //const [error, setError] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [filteredImages, setFilteredImages] = useState();
-  const [loading, setLoading] = useState(false);
   const { isPending, isError, data: memes, error } = useGetMemes();
 
-  console.log('data:', memes);
+  // Handle image sorting
+  const [sortBy, setSortBy] = useState('New');
+
   console.log('filtered data:', filteredImages);
 
   useEffect(() => {
     setFilteredImages(memes);
   }, [memes]);
 
-  // useEffect(() => {
-  //   setLoading(true);
-
-  //   async function getMemes() {
-  //     const data = useGetMemes();
-  //     setImages(data);
-  //     setFilteredImages(data); // Initialize with full list
-
-  //     setLoading(false);
-  //   }
-
-  //   getMemes();
-
-  //   // async function fetchImages() {
-  //   //   try {
-  //   //     const response = await axios.get(`${apiBaseUrl}/api/get-louvre-images`);
-  //   //     setImages(response.data);
-  //   //     setFilteredImages(response.data); // Initialize with full list
-  //   //   } catch (err) {
-  //   //     setError(err.message);
-  //   //   } finally {
-  //   //     setLoading(false);
-  //   //   }
-  //   // }
-  //   // fetchImages();
-  // }, []);
+  useEffect(() => {
+    console.log(sortBy);
+    if (sortBy === 'New' && filteredImages) {
+      setFilteredImages(
+        filteredImages.sort((a, b) => b.created_date - a.created_date)
+      );
+    }
+    if (sortBy === 'Hot' && filteredImages) {
+      setFilteredImages(filteredImages.sort((a, b) => b.votes - a.votes));
+    }
+  }, [sortBy]);
 
   // Regular function to filter images
   const filterImages = (query) => {
@@ -143,7 +132,7 @@ const Louvre = () => {
   }
   return (
     <Paper>
-      <Stack mb='md' align='center' w='100%'>
+      <Stack mb='md' align='center' w='100%' justify='space-between'>
         <Group>
           <Title>The Louvre</Title>
           <Image
@@ -155,12 +144,19 @@ const Louvre = () => {
             // style={{ display: 'inline-block' }}
           />
         </Group>
-        <Group>
+        <Group align='flex-end' justify='space-between'>
+          <Select
+            data={['New', 'Hot']}
+            value={sortBy}
+            onChange={setSortBy}
+            label='Sort by'
+          />
+
           <TextInput
             placeholder='Search by title or creator'
             value={searchQuery}
             onChange={handleSearchChange}
-            ml='xl'
+            label='Search'
           />
           <UploadCustomLouvreMeme />
         </Group>

@@ -14,19 +14,13 @@ import {
 import styled from 'styled-components';
 
 // Components
-import Header from '../components/Header.jsx';
 import StickerPanel from '../components/StickerPanel.jsx';
-import Footer from '../components/Footer.jsx';
-import UploadPanel from '../components/UploadPanel.jsx';
+
 import CanvasTools from '../components/CanvasTools.jsx';
 import DownloadPanel from '../components/DownloadPanel.jsx';
-import UploadStickerPanel from '../components/UploadStickerPanel.jsx';
 import ViewMeme from '../components/ViewMeme.jsx';
 
 // Routing
-import { Outlet } from 'react-router-dom';
-import Louvre from './Louvre.jsx';
-import Layout from '../components/Layout.jsx';
 import UploadImage from '../components/UploadImage.jsx';
 
 // Styled components
