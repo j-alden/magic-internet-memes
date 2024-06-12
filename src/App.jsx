@@ -1,24 +1,11 @@
-// import { useState } from 'react'
-// import reactLogo from './assets/react.svg'
-// import viteLogo from '/vite.svg'
-import './App.css';
-
 // src/App.js
 import React, { useState, useEffect, useRef } from 'react';
 import { fabric } from 'fabric';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import axios from 'axios';
 
 // Styling
 import '@mantine/core/styles.css';
-import {
-  MantineProvider,
-  AppShell,
-  Title,
-  Image,
-  Paper,
-  LoadingOverlay,
-} from '@mantine/core';
-import styled from 'styled-components';
+import { MantineProvider, AppShell } from '@mantine/core';
 import { theme } from './theme';
 
 // Custom wizard font
@@ -26,49 +13,36 @@ import './assets/WizardFont.otf';
 
 // Components
 import Header from './components/Header.jsx';
-import StickerPanel from './components/StickerPanel.jsx';
 import Footer from './components/Footer.jsx';
-import UploadPanel from './components/UploadPanel.jsx';
-import CanvasTools from './components/CanvasTools.jsx';
-import DownloadPanel from './components/DownloadPanel.jsx';
-import UploadStickerPanel from './components/UploadStickerPanel.jsx';
 import ViewMeme from './components/ViewMeme.jsx';
 
 // Routing
-import { Outlet } from 'react-router-dom';
-import Louvre from './Pages/Louvre.jsx';
-import Layout from './components/Layout.jsx';
-import CreateMeme from './Pages/CreateMeme.jsx';
-import Leaderboard from './Pages/Leaderboard.jsx';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Louvre from './pages/Louvre.jsx';
+import CreateMeme from './pages/CreateMeme.jsx';
+import Leaderboard from './pages/Leaderboard.jsx';
 
-// Styled components
+// React Query
+import { useGetMemes } from './hooks/useGetMemes.js';
+import { useGetLouvreCreatedLeaders } from './hooks/useGetLouvreCreatedLeaders';
+import { useGetLouvreVoteLeaders } from './hooks/useGetLouvreVoteLeaders';
+import { useGetStickerLeaders } from './hooks/useGetStickerLeaders';
 
-const Container = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 20px;
-  gap: 20px;
-`;
-
-const CanvasWrapper = styled.div`
-  border: 2px solid #d9d9d9;
-  position: relative;
-`;
-
+const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
 const MAX_IMAGE_DIMENSION = 2048; // Limit the maximum dimension of the image to 2048px
 
 const App = () => {
   const canvasRef = useRef(null); // canvas for UI
   const exportCanvasRef = useRef(null); // canvas for exported image
-  //const [opened, { toggle }] = useDisclosure();
-
   const [canvas, setCanvas] = useState(null);
   const [exportCanvas, setExportCanvas] = useState(null);
-  const [enableButtons, setEnableButtons] = useState(false);
-  const [uploadedImageUrl, setUploadedImageUrl] = useState(null);
   const [editedBlob, setEditedBlob] = useState(null);
-  const [loading, setLoading] = useState(false);
+
+  // Pre fetch data for Louvre and Leaderboard
+  useGetMemes();
+  useGetLouvreCreatedLeaders();
+  useGetLouvreVoteLeaders();
+  useGetStickerLeaders();
 
   // Initialize Fabric canvas only once
   useEffect(() => {
@@ -193,7 +167,6 @@ const App = () => {
     return scaleFactor;
   };
 
-  console.log(editedBlob);
   if (editedBlob) {
     return (
       <MantineProvider defaultColorScheme='auto' theme={theme}>

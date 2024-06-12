@@ -8,6 +8,6 @@ export default async function handler(request, response) {
     group by created_by 
     order by 2 desc
     ;`;
-  console.log(rows);
+
   return response.send(rows);
 }

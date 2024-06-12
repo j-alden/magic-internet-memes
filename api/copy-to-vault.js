@@ -26,8 +26,6 @@ export default async function toVault(req, res) {
     title = title[0];
     createdBy = createdBy[0];
 
-    console.log(fields);
-
     try {
       // Get file extension
       const pathname = new URL(blob_url).pathname;
@@ -40,7 +38,6 @@ export default async function toVault(req, res) {
       });
 
       const newBlobUrl = copyResult.url;
-      console.log(newBlobUrl);
 
       // Massage data for insert
       if (title == 'undefined') {
@@ -55,8 +52,6 @@ export default async function toVault(req, res) {
       INSERT INTO memes (title, created_by, blob_url)
       VALUES (${title}, ${createdBy}, ${newBlobUrl})
       RETURNING *;`;
-
-      console.log(rows);
 
       res.status(200).json(rows);
     } catch (uploadError) {

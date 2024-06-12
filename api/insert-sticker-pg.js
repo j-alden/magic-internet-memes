@@ -5,7 +5,6 @@ export const config = {
 };
 
 export default async function upload(request) {
-  console.log(request);
   if (request.method !== 'POST') {
     return request.status(405).json({ message: 'Method not allowed' });
   }

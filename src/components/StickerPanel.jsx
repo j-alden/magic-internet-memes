@@ -18,6 +18,9 @@ import UploadStickerPanel from './UploadStickerPanel.jsx';
 import UploadCommunitySticker from './UploadCommunitySticker.jsx';
 import CreateStickerModal from './CreateStickerModal.jsx';
 
+// React query
+import { useGetStickers } from '../hooks/useGetStickers.js';
+
 const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
 
 // Get sticker categories
@@ -28,54 +31,21 @@ const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
 const StickerPanel = ({ canvas }) => {
   const [inputText, setInputText] = useState(''); // State for the text input
   const [textColor, setTextColor] = useState('#2bf907');
-  const [stickers, setStickers] = useState([]); // stickers to display
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
   const [stickerCategories, setStickerCategories] = useState([]); // stickers to display
   const [showCommunityStickers, setShowCommunityStickers] = useState(false);
+  const {
+    isPending,
+    isError,
+    data: stickers,
+    error: stickerError,
+  } = useGetStickers(showCommunityStickers);
 
-  // Initialize Fabric canvas only once
-  // useEffect(() => {
-  //   setLoading(true);
-  //   async function fetchStickers() {
-  //     try {
-  //       const response = await axios.get(
-  //         `${apiBaseUrl}/api/get-default-stickers`
-  //       );
-  //       setStickers(response.data);
-  //     } catch (err) {
-  //       setError(err.message);
-  //     } finally {
-  //       setLoading(false);
-  //     }
-  //   }
-  //   fetchStickers();
-  // }, []);
   useEffect(() => {
-    setLoading(true);
-    async function fetchStickers() {
-      try {
-        let requestUrl;
-        if (showCommunityStickers) {
-          requestUrl = `${apiBaseUrl}/api/get-all-stickers`;
-        } else {
-          requestUrl = `${apiBaseUrl}/api/get-default-stickers`;
-        }
-        const response = await axios.get(requestUrl);
-        setStickers(response.data);
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
+    if (stickers) {
+      setStickerCategories([
+        ...new Set(stickers.map((sticker) => sticker.category)),
+      ]);
     }
-    fetchStickers();
-  }, [showCommunityStickers]);
-
-  useEffect(() => {
-    setStickerCategories([
-      ...new Set(stickers.map((sticker) => sticker.category)),
-    ]);
   }, [stickers]);
 
   // Return JSX to display stickers for a given category
@@ -198,77 +168,75 @@ const StickerPanel = ({ canvas }) => {
     canvas.setActiveObject(text);
   };
 
-  if (loading) {
+  if (isPending) {
     return (
       <Paper withBorder p='xs' mt='xs'>
         <Title order={3}>Loading Stickers...</Title>
       </Paper>
     );
-  } else {
-    return (
-      <Paper withBorder p='xs' mt='xs'>
-        <Group justify='space-between'>
-          <Group>
-            <Title order={3}>Choose Stickers</Title>
-            <CreateStickerModal stickerCategories={stickerCategories} />
-          </Group>
+  }
 
-          <Switch
-            checked={showCommunityStickers}
-            onChange={(event) =>
-              setShowCommunityStickers(event.currentTarget.checked)
-            }
-            label='Include Community Stickers'
-            // style={{
-            //   //display: 'inline-block',
-            //   float: 'right',
-            // }}
-          />
+  return (
+    <Paper withBorder p='xs' mt='xs'>
+      <Group justify='space-between'>
+        <Group>
+          <Title order={3}>Choose Stickers</Title>
+          <CreateStickerModal stickerCategories={stickerCategories} />
         </Group>
 
-        <Tabs
-          defaultValue='Faces'
-          styles={{
-            root: {
-              width: '100%',
-              display: 'inline-block',
-              gap: '10px',
-              marginTop: '10px',
-              //height: '150px',
-            },
-            list: {},
-            panel: {
-              cursor: 'pointer',
-              display: 'inline-block',
-              marginTop: '10px',
-            },
-          }}
-        >
-          <Tabs.List>
-            {stickerCategories.map((category) => (
-              <Tabs.Tab value={category} key={category}>
-                {category}
-              </Tabs.Tab>
-            ))}
-            <Tabs.Tab value='Add Custom' key='custom'>
-              Add Custom
+        <Switch
+          checked={showCommunityStickers}
+          onChange={(event) =>
+            setShowCommunityStickers(event.currentTarget.checked)
+          }
+          label='Include Community Stickers'
+          // style={{
+          //   //display: 'inline-block',
+          //   float: 'right',
+          // }}
+        />
+      </Group>
+
+      <Tabs
+        defaultValue='Faces'
+        styles={{
+          root: {
+            width: '100%',
+            display: 'inline-block',
+            gap: '10px',
+            marginTop: '10px',
+            //height: '150px',
+          },
+          list: {},
+          panel: {
+            cursor: 'pointer',
+            display: 'inline-block',
+            marginTop: '10px',
+          },
+        }}
+      >
+        <Tabs.List>
+          {stickerCategories.map((category) => (
+            <Tabs.Tab value={category} key={category}>
+              {category}
             </Tabs.Tab>
-          </Tabs.List>
-          {stickerCategories.map((category) =>
-            displayStickerCategory(category)
-          )}
-          <Tabs.Panel value={'Add Custom'} key='custom'>
-            <Text>
-              Upload an image to use as a one-off sticker. If you want it to be
-              re-usable, upload to the community below.
-            </Text>
-            <UploadStickerPanel canvas={canvas} />
-            {/* <UploadCommunitySticker /> */}
-          </Tabs.Panel>
-        </Tabs>
-      </Paper>
-    );
-  }
+          ))}
+          <Tabs.Tab value='Add Custom' key='custom'>
+            Add Custom
+          </Tabs.Tab>
+        </Tabs.List>
+        {stickerCategories.map((category) => displayStickerCategory(category))}
+        <Tabs.Panel value={'Add Custom'} key='custom'>
+          <Text>
+            Upload an image to use as a one-off sticker. If you want it to be
+            re-usable, upload to the community below.
+          </Text>
+          <UploadStickerPanel canvas={canvas} />
+          {/* <UploadCommunitySticker /> */}
+        </Tabs.Panel>
+      </Tabs>
+    </Paper>
+  );
 };
 
 export default StickerPanel;

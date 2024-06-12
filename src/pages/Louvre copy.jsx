@@ -1,8 +1,15 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import axios from 'axios';
 import debounce from 'lodash.debounce'; // Import debounce from lodash
 import {
+  MantineProvider,
+  Container,
+  AppShell,
+  Grid,
   Paper,
+  LoadingOverlay,
   Title,
+  Button,
   Image,
   Text,
   Card,
@@ -10,6 +17,7 @@ import {
   Group,
   Flex,
   TextInput,
+  Box,
   Stack,
 } from '@mantine/core';
 import { Link } from 'react-router-dom';
@@ -17,22 +25,24 @@ import UploadCustomLouvreMeme from '../components/UploadCustomLouvreMeme';
 import LikeButton from '../components/LikeButton';
 
 // React query
+import { useQueryClient } from '@tanstack/react-query';
 import { useGetMemes } from '../hooks/useGetMemes';
+
+const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
 
 const Louvre = () => {
   const [images, setImages] = useState([]);
-  //const [error, setError] = useState(null);
+  const [error, setError] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
-  const [filteredImages, setFilteredImages] = useState();
+  const [filteredImages, setFilteredImages] = useState([]);
   const [loading, setLoading] = useState(false);
-  const { isPending, isError, data: memes, error } = useGetMemes();
-
-  console.log('data:', memes);
-  console.log('filtered data:', filteredImages);
+  const queryClient = useQueryClient();
+  const memes = useGetMemes();
+  console.log(memes);
 
   useEffect(() => {
     setFilteredImages(memes);
-  }, [memes]);
+  }, []);
 
   // useEffect(() => {
   //   setLoading(true);
@@ -64,7 +74,7 @@ const Louvre = () => {
   // Regular function to filter images
   const filterImages = (query) => {
     const lowerCaseQuery = query.toLowerCase();
-    const filtered = memes.filter(
+    const filtered = images.filter(
       (image) =>
         (image.title ? image.title.toLowerCase() : '').includes(
           lowerCaseQuery
@@ -82,7 +92,7 @@ const Louvre = () => {
       const lowerCaseQuery = query.toLowerCase();
 
       setFilteredImages(
-        memes.filter(
+        images.filter(
           (image) =>
             (image.title ? image.title.toLowerCase() : '').includes(
               lowerCaseQuery
@@ -93,12 +103,12 @@ const Louvre = () => {
         )
       );
     }, 300),
-    [memes]
+    [images]
   );
 
   // Debounced version of the filterImages function
   const debouncedFilterImages = useCallback(debounce(filterImages, 300), [
-    memes,
+    images,
   ]);
 
   // Update search query and debounced filtering
@@ -112,35 +122,10 @@ const Louvre = () => {
     debouncedFilter(searchQuery);
   }, [searchQuery, debouncedFilter]);
 
-  if (filteredImages == null) {
-    return (
-      <Paper>
-        <Stack mb='md' align='center' w='100%'>
-          <Group>
-            <Title>The Louvre</Title>
-            <Image
-              src='./framed-picture.png'
-              h='30'
-              w='auto'
-              // align='center'
-              // float='right'
-              // style={{ display: 'inline-block' }}
-            />
-          </Group>
-          <Group>
-            <TextInput
-              placeholder='Search by title or creator'
-              value={searchQuery}
-              onChange={handleSearchChange}
-              ml='xl'
-              disabled
-            />
-            <UploadCustomLouvreMeme />
-          </Group>
-        </Stack>
-      </Paper>
-    );
+  if (filteredImages) {
+    return <div>Loading</div>;
   }
+
   return (
     <Paper>
       <Stack mb='md' align='center' w='100%'>
@@ -180,7 +165,7 @@ const Louvre = () => {
             //m='sm'
             //maw='33%'
             withBorder
-            key={image.meme_id}
+            key={image.title}
           >
             <Card.Section align='center'>
               <Link to={image.blob_url} target='_blank'>
@@ -213,7 +198,11 @@ const Louvre = () => {
                 )}
               </Text>
 
-              <LikeButton meme={image} setFilteredImages={setFilteredImages} />
+              <LikeButton
+                meme={image}
+                setImages={setImages}
+                setFilteredImages={setFilteredImages}
+              />
             </Group>
           </Card>
         ))}

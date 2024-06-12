@@ -31,9 +31,6 @@ export default async function upload(req, res) {
       // Access the uploaded file
       const file = files.file[0];
 
-      console.log(file);
-      console.log(fields);
-
       if (!file) {
         res.status(400).json({ error: 'No file uploaded' });
         return;
@@ -61,7 +58,6 @@ export default async function upload(req, res) {
       VALUES (${title}, ${createdBy}, ${blob.url})
       RETURNING *;`;
 
-      console.log(rows);
       // Return the blob response
       res.status(200).json(rows);
     } catch (uploadError) {

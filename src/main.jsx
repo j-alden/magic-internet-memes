@@ -1,45 +1,33 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-//import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import App from './App.jsx';
 
-//import './index.css'
+// React query
+import {
+  useQuery,
+  useMutation,
+  useQueryClient,
+  QueryClient,
+  QueryClientProvider,
+} from '@tanstack/react-query';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+
+const queryClient = new QueryClient();
 
 // Analytics
 import { Analytics } from '@vercel/analytics/react';
 
-// Trying routing with components instead
-// const router = createBrowserRouter([
-//   {
-//     path: '/',
-//     element: <App />,
-//     errorElement: <ErrorPage />,
-//     // children: [
-//     //   {
-//     //     path: 'louvre',
-//     //     element: <Louvre />,
-//     //   },
-//     // ],
-//   },
-//   {
-//     path: 'louvre',
-//     element: <Louvre />,
-//     errorElement: <ErrorPage />,
-//     // children: [
-//     //   {
-//     //     path: 'louvre',
-//     //     element: <Louvre />,
-//     //   },
-//     // ],
-//   },
-// ]);
-
 ReactDOM.createRoot(document.getElementById('root')).render(
-  <>
+  <QueryClientProvider client={queryClient}>
     <Analytics />
-    {/* <RouterProvider router={router} /> */}
     <App />
-  </>
+    <ReactQueryDevtools initialIsOpen={false} />
+  </QueryClientProvider>
+
+  // <>
+  //   <Analytics />
+  //   <App />
+  // </>
 
   // <React.StrictMode>
   //   <App />
