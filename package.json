@@ -35,7 +35,8 @@
     "react-dropzone": "^14.2.3",
     "react-router-dom": "^6.23.1",
     "styled-components": "^6.1.11",
-    "uuid": "^9.0.1"
+    "uuid": "^9.0.1",
+    "webfontloader": "^1.6.28"
   },
   "devDependencies": {
     "@types/react": "^18.2.66",

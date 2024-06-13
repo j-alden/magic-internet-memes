@@ -17,6 +17,9 @@ import {
 import UploadStickerPanel from './UploadStickerPanel.jsx';
 import CreateStickerModal from './CreateStickerModal.jsx';
 
+// Import custom font
+import WebFont from 'webfontloader';
+
 // React query
 import { useGetStickers } from '../hooks/useGetStickers.js';
 
@@ -39,6 +42,16 @@ const StickerPanel = ({ canvas }) => {
       ]);
     }
   }, [stickers]);
+
+  // Load font immediately to fix custom text being added with wrong font initially
+  useEffect(() => {
+    WebFont.load({
+      custom: {
+        families: ['MagicInternetMoney'],
+        url: ['srcApp.css'],
+      },
+    });
+  }, []);
 
   // Return JSX to display stickers for a given category
   const displayStickerCategory = (category) => {
@@ -109,11 +122,6 @@ const StickerPanel = ({ canvas }) => {
     fabric.Image.fromURL(
       src,
       (img) => {
-        // // Hack to avoid
-        // img.setSrc(src, null, {
-        //   crossOrigin: 'anonymous',
-        // });
-
         // Removed sticker scaling for now
         img.scaleToWidth(125);
         //img.scaleToHeight(150);
@@ -143,6 +151,7 @@ const StickerPanel = ({ canvas }) => {
   // Add text to canvas
   const addText = () => {
     const text = new fabric.Text(inputText, {
+      fontFamily: 'MagicInternetMoney',
       left: 100,
       top: 100,
       fill: 'black',
@@ -153,11 +162,13 @@ const StickerPanel = ({ canvas }) => {
       paintFirst: 'stroke',
       stroke: textColor,
       strokeWidth: 4,
-      fontFamily: 'MagicInternetMoney',
+
       //fontFamily: 'WizardFont',
     });
     canvas.add(text);
+
     canvas.setActiveObject(text);
+    canvas.renderAll();
   };
 
   if (isPending) {
