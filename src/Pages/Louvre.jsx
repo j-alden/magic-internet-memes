@@ -11,11 +11,8 @@ import {
   Flex,
   TextInput,
   Stack,
-  Combobox,
-  InputBase,
-  useCombobox,
   Select,
-  Box,
+  Loader,
 } from '@mantine/core';
 import { Link } from 'react-router-dom';
 import UploadCustomLouvreMeme from '../components/UploadCustomLouvreMeme';
@@ -27,28 +24,12 @@ import { useGetMemes } from '../hooks/useGetMemes';
 const Louvre = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [filteredImages, setFilteredImages] = useState();
-  const { isPending, isError, data: memes, error } = useGetMemes();
-
-  // Handle image sorting
-  const [sortBy, setSortBy] = useState('New');
-
-  console.log('filtered data:', filteredImages);
+  const [sortBy, setSortBy] = useState('New'); // Handle image sorting
+  const { isPending, isError, data: memes, error } = useGetMemes(sortBy);
 
   useEffect(() => {
     setFilteredImages(memes);
   }, [memes]);
-
-  useEffect(() => {
-    console.log(sortBy);
-    if (sortBy === 'New' && filteredImages) {
-      setFilteredImages(
-        filteredImages.sort((a, b) => b.created_date - a.created_date)
-      );
-    }
-    if (sortBy === 'Hot' && filteredImages) {
-      setFilteredImages(filteredImages.sort((a, b) => b.votes - a.votes));
-    }
-  }, [sortBy]);
 
   // Regular function to filter images
   const filterImages = (query) => {
@@ -70,17 +51,19 @@ const Louvre = () => {
     debounce((query) => {
       const lowerCaseQuery = query.toLowerCase();
 
-      setFilteredImages(
-        memes.filter(
-          (image) =>
-            (image.title ? image.title.toLowerCase() : '').includes(
-              lowerCaseQuery
-            ) ||
-            (image.createdBy ? image.createdBy.toLowerCase() : '').includes(
-              lowerCaseQuery
-            )
-        )
-      );
+      if (memes) {
+        setFilteredImages(
+          memes.filter(
+            (image) =>
+              (image.title ? image.title.toLowerCase() : '').includes(
+                lowerCaseQuery
+              ) ||
+              (image.createdBy ? image.createdBy.toLowerCase() : '').includes(
+                lowerCaseQuery
+              )
+          )
+        );
+      }
     }, 300),
     [memes]
   );
@@ -104,7 +87,7 @@ const Louvre = () => {
   if (filteredImages == null) {
     return (
       <Paper>
-        <Stack mb='md' align='center' w='100%'>
+        <Stack mb='md' align='center' w='100%' justify='space-between'>
           <Group>
             <Title>The Louvre</Title>
             <Image
@@ -116,16 +99,22 @@ const Louvre = () => {
               // style={{ display: 'inline-block' }}
             />
           </Group>
-          <Group>
+          <Group align='flex-end' justify='space-between'>
+            <Select
+              data={['New', 'Hot']}
+              value={sortBy}
+              onChange={setSortBy}
+              label='Sort by'
+            />
             <TextInput
               placeholder='Search by title or creator'
               value={searchQuery}
               onChange={handleSearchChange}
-              ml='xl'
-              disabled
+              label='Search'
             />
             <UploadCustomLouvreMeme />
           </Group>
+          <Loader />
         </Stack>
       </Paper>
     );
@@ -145,12 +134,12 @@ const Louvre = () => {
           />
         </Group>
         <Group align='flex-end' justify='space-between'>
-          {/* <Select
+          <Select
             data={['New', 'Hot']}
             value={sortBy}
             onChange={setSortBy}
             label='Sort by'
-          /> */}
+          />
 
           <TextInput
             placeholder='Search by title or creator'

@@ -2,8 +2,7 @@ import { sql } from '@vercel/postgres';
 
 export default async function handler(req, res) {
   const { includeCommunity } = req.query;
-  console.log(includeCommunity);
-  console.log(typeof includeCommunity);
+
   if (includeCommunity === 'true') {
     console.log('getting all stickers...');
     let { rows } =

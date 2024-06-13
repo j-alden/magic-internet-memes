@@ -31,7 +31,7 @@ const App = () => {
   const [editedBlob, setEditedBlob] = useState(null);
 
   // Pre fetch data for Louvre and Leaderboard
-  useGetMemes();
+  useGetMemes('New');
   useGetLouvreCreatedLeaders();
   useGetLouvreVoteLeaders();
   useGetStickerLeaders();

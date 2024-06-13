@@ -11,6 +11,7 @@ import {
   Title,
   Tabs,
   Switch,
+  Loader,
 } from '@mantine/core';
 //import stickers from '../helpers/stickers.js';
 import UploadStickerPanel from './UploadStickerPanel.jsx';
@@ -18,11 +19,6 @@ import CreateStickerModal from './CreateStickerModal.jsx';
 
 // React query
 import { useGetStickers } from '../hooks/useGetStickers.js';
-
-// Get sticker categories
-// const stickerCategories = [
-//   ...new Set(stickers.map((sticker) => sticker.category)),
-// ];
 
 const StickerPanel = ({ canvas }) => {
   const [inputText, setInputText] = useState(''); // State for the text input
@@ -167,7 +163,9 @@ const StickerPanel = ({ canvas }) => {
   if (isPending) {
     return (
       <Paper withBorder p='xs' mt='xs'>
-        <Title order={3}>Loading Stickers...</Title>
+        {/* <Title order={3}>Loading Stickers...</Title> */}
+        <Title order={3}>Choose Stickers</Title>
+        <Loader />
       </Paper>
     );
   }
