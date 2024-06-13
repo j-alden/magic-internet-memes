@@ -145,12 +145,12 @@ const Louvre = () => {
           />
         </Group>
         <Group align='flex-end' justify='space-between'>
-          <Select
+          {/* <Select
             data={['New', 'Hot']}
             value={sortBy}
             onChange={setSortBy}
             label='Sort by'
-          />
+          /> */}
 
           <TextInput
             placeholder='Search by title or creator'
