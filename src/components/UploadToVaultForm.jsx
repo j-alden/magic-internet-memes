@@ -21,7 +21,7 @@ import axios from 'axios';
 import { Link } from 'react-router-dom';
 const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
 
-const UploadtoVaultForm = ({ blob, blob_url }) => {
+const UploadtoVaultForm = ({ blob, blob_url, isGif }) => {
   const [visible, { toggle }] = useDisclosure(false);
   const [showLoader, setShowLoader] = useState(false);
   const [imageUploaded, setImageUploaded] = useState(false);
@@ -44,9 +44,15 @@ const UploadtoVaultForm = ({ blob, blob_url }) => {
 
   const uploadToLouvre = async (formValues) => {
     setShowLoader(true); // make loader visible
+    let fileName = '';
+    if (isGif) {
+      fileName = 'magic-meme.gif';
+    } else {
+      fileName = 'magic-meme.jpg';
+    }
 
     const formData = new FormData();
-    formData.append('file', blob, 'edited-image.png');
+    formData.append('file', blob, fileName);
     formData.append('blob_url', blob_url);
     formData.append('title', formValues.title);
     formData.append('createdBy', formValues.createdBy);

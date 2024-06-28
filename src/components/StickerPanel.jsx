@@ -22,8 +22,17 @@ import WebFont from 'webfontloader';
 
 // React query
 import { useGetStickers } from '../hooks/useGetStickers.js';
+import { v4 as uuidv4 } from 'uuid'; // Use uuid for unique sticker IDs
 
-const StickerPanel = ({ canvas }) => {
+const StickerPanel = ({
+  canvas,
+  isGif,
+  setStickers,
+  currentFrameIndexRef,
+  gifStickers,
+  addGifSticker,
+  framesRef,
+}) => {
   const [inputText, setInputText] = useState(''); // State for the text input
   const [textColor, setTextColor] = useState('#2bf907');
   const [stickerCategories, setStickerCategories] = useState([]); // stickers to display
@@ -119,33 +128,80 @@ const StickerPanel = ({ canvas }) => {
 
   // Add sticker to canvas
   const addSticker = (src) => {
-    fabric.Image.fromURL(
-      src,
-      (img) => {
-        // Removed sticker scaling for now
-        img.scaleToWidth(125);
-        //img.scaleToHeight(150);
-        img.set({
-          left: 100,
-          top: 100,
-          angle: 0,
-          borderColor: 'red',
-          cornerColor: 'red',
-          cornerSize: 9,
-          transparentCorners: false,
-          hasControls: true,
-          selectable: true,
-          lockScalingFlip: true,
-        });
-        canvas.add(img);
-        canvas.setActiveObject(img);
-      },
-      // cross origin to anomyous is a hack to get around error
-      // When I switched to pulling from vercel blob store, got CORS error
-      // Should look into updating Access-Control-Allow-Origin
-      // https://stackoverflow.com/questions/31038027/why-does-adding-crossorigin-break-fabric-image-fromurl
-      { crossOrigin: 'anonymous' }
-    );
+    if (isGif) {
+      // Ensure gifStickers is initialized
+      const newStickers = { ...gifStickers.current };
+
+      const stickerId = uuidv4(); // Generate a unique ID for the sticker
+
+      // Iterate from the current frame index to the end
+      for (
+        let i = currentFrameIndexRef.current;
+        i < framesRef.current.length;
+        i++
+      ) {
+        // Initialize the stickers array for the frame if it doesn't exist
+        if (!newStickers[i]) {
+          newStickers[i] = [];
+        }
+
+        fabric.Image.fromURL(
+          src,
+          (img) => {
+            img.scaleToWidth(125);
+            img.set({
+              left: 100,
+              top: 100,
+              angle: 0,
+              borderColor: 'red',
+              cornerColor: 'red',
+              cornerSize: 9,
+              transparentCorners: false,
+              hasControls: true,
+              selectable: true,
+              lockScalingFlip: true,
+              id: stickerId,
+            });
+            newStickers[i].push(img);
+            // If it's the current frame, add the sticker to the canvas as well
+            if (i === currentFrameIndexRef.current) {
+              canvas.add(img);
+              canvas.renderAll(); // Ensure the canvas updates immediately
+            }
+          },
+          { crossOrigin: 'anonymous' }
+        );
+      }
+      setStickers(newStickers);
+    } else {
+      fabric.Image.fromURL(
+        src,
+        (img) => {
+          // Removed sticker scaling for now
+          img.scaleToWidth(125);
+          //img.scaleToHeight(150);
+          img.set({
+            left: 100,
+            top: 100,
+            angle: 0,
+            borderColor: 'red',
+            cornerColor: 'red',
+            cornerSize: 9,
+            transparentCorners: false,
+            hasControls: true,
+            selectable: true,
+            lockScalingFlip: true,
+          });
+          canvas.add(img);
+          canvas.setActiveObject(img);
+        },
+        // cross origin to anomyous is a hack to get around error
+        // When I switched to pulling from vercel blob store, got CORS error
+        // Should look into updating Access-Control-Allow-Origin
+        // https://stackoverflow.com/questions/31038027/why-does-adding-crossorigin-break-fabric-image-fromurl
+        { crossOrigin: 'anonymous' }
+      );
+    }
   };
 
   // Add text to canvas

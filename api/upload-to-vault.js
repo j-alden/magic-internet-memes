@@ -22,12 +22,6 @@ export default async function upload(req, res) {
     }
 
     try {
-      // Parse meme metadata from form
-      let { blob_url, title, createdBy } = fields;
-      blob_url = blob_url[0];
-      title = title[0];
-      createdBy = createdBy[0];
-
       // Access the uploaded file
       const file = files.file[0];
 
@@ -36,12 +30,25 @@ export default async function upload(req, res) {
         return;
       }
 
+      // Parse meme metadata from form
+      let { blob_url, title, createdBy } = fields;
+      blob_url = blob_url[0];
+      title = title[0];
+      createdBy = createdBy[0];
+
+      // Determine the filename and ensure it is not null or undefined
+      const filename =
+        file.originalFilename || file.newFilename || 'uploaded-file';
+
       const fileData = await fs.promises.readFile(file.filepath);
 
       // Upload the file to blob storage
-      const blob = await put(`the-louvre/${uuidv4()}.jpg`, fileData, {
+      const blob = await put(`the-louvre/${filename}`, fileData, {
         access: 'public',
       });
+      // const blob = await put(`the-louvre/${uuidv4()}.jpg`, fileData, {
+      //   access: 'public',
+      // });
 
       // Massage data for insert
       if (title == 'undefined') {

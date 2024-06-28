@@ -16,13 +16,14 @@ import {
   IconStackBackward,
 } from '@tabler/icons-react';
 
-const CanvasTools = ({ canvas, enabled }) => {
+const CanvasTools = ({ canvas, enabled, isGif }) => {
   const [advancedTools, setAdvancedTools] = useState(false);
 
   // Delete selected sticker
   const deleteActiveObject = () => {
     const activeObject = canvas.getActiveObject();
     if (activeObject) {
+      canvas.fire('custom:stickerremoved', { target: activeObject });
       canvas.remove(activeObject);
     }
   };
@@ -33,6 +34,7 @@ const CanvasTools = ({ canvas, enabled }) => {
     if (activeObject) {
       activeObject.flipX = !activeObject.flipX;
       activeObject.setCoords();
+      canvas.fire('custom:stickerflipped', { target: activeObject });
       canvas.renderAll();
     }
   };
@@ -42,6 +44,7 @@ const CanvasTools = ({ canvas, enabled }) => {
     const activeObject = canvas.getActiveObject();
     if (activeObject) {
       canvas.bringForward(activeObject);
+      canvas.fire('custom:stickerlayerchanged', { target: activeObject });
       canvas.renderAll();
     }
   };
@@ -51,6 +54,7 @@ const CanvasTools = ({ canvas, enabled }) => {
     const activeObject = canvas.getActiveObject();
     if (activeObject) {
       canvas.sendBackwards(activeObject);
+      canvas.fire('custom:stickerlayerchanged', { target: activeObject });
       canvas.renderAll();
     }
   };
@@ -59,6 +63,7 @@ const CanvasTools = ({ canvas, enabled }) => {
     const activeObject = canvas.getActiveObject();
     if (activeObject) {
       activeObject.set('skewX', value);
+      canvas.fire('custom:stickerskewed', { target: activeObject });
       canvas.renderAll();
     }
   };
@@ -66,6 +71,7 @@ const CanvasTools = ({ canvas, enabled }) => {
     const activeObject = canvas.getActiveObject();
     if (activeObject) {
       activeObject.set('skewY', value);
+      canvas.fire('custom:stickerskewed', { target: activeObject });
       canvas.renderAll();
     }
   };
@@ -113,7 +119,7 @@ const CanvasTools = ({ canvas, enabled }) => {
           variant='outline'
           //color='yellow'
           mt='xs'
-          disabled={!enabled}
+          disabled={!enabled || isGif}
         >
           Bring Forward
         </Button>
@@ -124,7 +130,7 @@ const CanvasTools = ({ canvas, enabled }) => {
           variant='outline'
           //color='yellow'
           mt='xs'
-          disabled={!enabled}
+          disabled={!enabled || isGif}
         >
           Send Backward
         </Button>

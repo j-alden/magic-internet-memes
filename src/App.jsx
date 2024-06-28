@@ -20,6 +20,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Louvre from './Pages/Louvre.jsx';
 import CreateMeme from './Pages/CreateMeme.jsx';
 import Leaderboard from './Pages/Leaderboard.jsx';
+import CreateMeme2 from './Pages/CreateMeme copy.jsx';
 
 // React Query
 import { useGetMemes } from './hooks/useGetMemes.js';
@@ -66,11 +67,11 @@ const App = () => {
               <Routes>
                 <Route
                   path='/'
-                  element={editedBlob ? <ViewMeme /> : <CreateMeme />}
+                  element={editedBlob ? <ViewMeme /> : <CreateMeme2 />}
                 />
                 <Route path='/louvre' element={<Louvre />} />
                 {/* <Route index element={<CreateMeme />} /> */}
-                <Route path='/create' element={<CreateMeme />} />
+                <Route path='/create' element={<CreateMeme2 />} />
                 <Route path='/leaderboard' element={<Leaderboard />} />
               </Routes>
             </AppShell.Main>

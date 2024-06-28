@@ -10,15 +10,10 @@ import {
   Flex,
 } from '@mantine/core';
 
-import {
-  IconDownload,
-  IconPhotoDown,
-  IconArrowBack,
-  IconArrowBigLeft,
-} from '@tabler/icons-react';
+import { IconPhotoDown, IconArrowBigLeft } from '@tabler/icons-react';
 import UploadToVaultForm from './UploadToVaultForm';
 
-const ViewMeme = ({ uploadedImageUrl, editedBlob }) => {
+const ViewMeme = ({ editedBlob, isGif }) => {
   const blob_url = URL.createObjectURL(editedBlob); // url to display image
 
   const resetImage = () => {
@@ -57,7 +52,7 @@ const ViewMeme = ({ uploadedImageUrl, editedBlob }) => {
             </Anchor>
             <Anchor
               href={blob_url}
-              download={'edited-meme.jpg'}
+              download={isGif ? 'magic-meme.gif' : 'magic-meme.jpg'}
               underline='never'
             >
               <Button //onClick={onDownload}
@@ -74,7 +69,11 @@ const ViewMeme = ({ uploadedImageUrl, editedBlob }) => {
               </Button>
             </Anchor>
           </Stack>
-          <UploadToVaultForm blob={editedBlob} blob_url={blob_url} />
+          <UploadToVaultForm
+            blob={editedBlob}
+            blob_url={blob_url}
+            isGif={isGif}
+          />
         </Flex>
       </Paper>
       // <Paper withBorder p='sm' m='sm'>

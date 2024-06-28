@@ -14,7 +14,7 @@ const UploadImage = ({ onDrop }) => {
           fullWidth
           rightSection={<IconUpload size={14} />}
         >
-          Upload Image
+          Upload Image or GIF
         </Button>
       )}
     </FileButton>
