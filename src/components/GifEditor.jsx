@@ -200,6 +200,10 @@ const GifEditor = ({
         fabricCanvas.renderAll.bind(fabricCanvas)
       );
     });
+
+    // fabric.Image.fromURL(imageURL, (img) => {
+    //   fabricCanvas.add(img);
+    // });
     // Draw stickers on the current frame
     drawStickers(currentFrameIndex);
   };
@@ -318,3 +322,37 @@ const frameToDataURL = (frame) => {
 
   return offscreenCanvas.toDataURL();
 };
+
+function removeTransparency(frame) {
+  if (!frame.transparentIndex) {
+    return frame;
+  }
+
+  const { width, height, patch } = frame;
+  const transparentIndex = frame.transparentIndex;
+
+  // Create a new ImageData object to manipulate the frame's pixels
+  const imageData = new ImageData(width, height);
+
+  for (let i = 0; i < patch.length; i += 4) {
+    const r = patch[i];
+    const g = patch[i + 1];
+    const b = patch[i + 2];
+    const a = patch[i + 3];
+
+    // Replace transparent pixels with white (or any background color)
+    if (a === 0 || patch[i / 4] === transparentIndex) {
+      imageData.data[i] = 255; // R
+      imageData.data[i + 1] = 255; // G
+      imageData.data[i + 2] = 255; // B
+      imageData.data[i + 3] = 255; // A
+    } else {
+      imageData.data[i] = r;
+      imageData.data[i + 1] = g;
+      imageData.data[i + 2] = b;
+      imageData.data[i + 3] = a;
+    }
+  }
+
+  return imageData;
+}

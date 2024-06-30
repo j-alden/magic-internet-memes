@@ -65,7 +65,7 @@ const DownloadPanel = ({
   const downloadImage = async () => {
     setLoading(true);
 
-    await new Promise((resolve) => setTimeout(resolve, 100)); // Force UI update
+    // await new Promise((resolve) => setTimeout(resolve, 100)); // Force UI update
 
     let blob_url;
     if (isGif) {
@@ -100,7 +100,7 @@ const DownloadPanel = ({
       // // Convert the transformed stickers to JSON and send to the server
 
       // console.log(stickersRef.current);
-      // uploadGifData(framesRef.current, transformedStickers);
+      //uploadGifData(framesRef.current, stickersRef.current);
       blob_url = await generateAndDownloadGIF();
     } else {
       const blob = saveTempImage(canvas, exportCanvas);
@@ -163,9 +163,12 @@ const DownloadPanel = ({
     return new Promise((resolve, reject) => {
       try {
         const gif = new GIF({
-          workers: 2,
-          quality: 10,
+          workers: 4,
+          quality: 1, // Low number is high quality
           workerScript: '/gif.worker.js',
+          dither: 'Atkinson',
+          //globalPallette may improve color if distorted. Undocumented option
+          globalPalette: true,
         });
 
         const { width, height } = framesRef.current[0].dims;
@@ -206,25 +209,12 @@ const DownloadPanel = ({
 
           if (stickersRef.current[index]) {
             stickersRef.current[index].forEach((sticker) => {
-              // const fabricSticker = new fabric.Image(sticker.getElement(), {
-              //   left: sticker.left,
-              //   top: sticker.top,
-              //   scaleX: sticker.scaleX,
-              //   scaleY: sticker.scaleY,
-              //   angle: sticker.angle,
-              //   originX: 'left',
-              //   originY: 'top',
-              //   skewX: sticker.skewX,
-              //   skewY: sticker.skewY,
-              //   flipX: sticker.flipX,
-              //   flipY: sticker.flipY,
-              // });
-              // fabricCanvas.add(fabricSticker);
-              fabricCanvas.add(sticker); // doesn't persist to future frames
+              fabricCanvas.add(sticker);
             });
           }
 
-          const canvasDataURL = fabricCanvas.toDataURL({ format: 'png' });
+          //const canvasDataURL = fabricCanvas.toDataURL({ format: 'png' });
+          const canvasDataURL = fabricCanvas.toDataURL();
           const imageData = await dataURLToImageData(
             canvasDataURL,
             width,

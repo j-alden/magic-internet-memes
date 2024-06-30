@@ -55,7 +55,7 @@ const App = () => {
     );
   } else {
     return (
-      <MantineProvider defaultColorScheme='auto' theme={theme}>
+      <MantineProvider defaultColorScheme='light' theme={theme}>
         <AppShell padding='md' header={{ height: 120 }}>
           <Router>
             <Header />
@@ -67,11 +67,11 @@ const App = () => {
               <Routes>
                 <Route
                   path='/'
-                  element={editedBlob ? <ViewMeme /> : <CreateMeme2 />}
+                  element={editedBlob ? <ViewMeme /> : <CreateMeme />}
                 />
                 <Route path='/louvre' element={<Louvre />} />
                 {/* <Route index element={<CreateMeme />} /> */}
-                <Route path='/create' element={<CreateMeme2 />} />
+                <Route path='/create' element={<CreateMeme />} />
                 <Route path='/leaderboard' element={<Leaderboard />} />
               </Routes>
             </AppShell.Main>

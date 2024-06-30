@@ -8,9 +8,14 @@ import {
   Group,
   Stack,
   Flex,
+  Text,
 } from '@mantine/core';
 
-import { IconPhotoDown, IconArrowBigLeft } from '@tabler/icons-react';
+import {
+  IconPhotoDown,
+  IconArrowBigLeft,
+  IconDeviceMobile,
+} from '@tabler/icons-react';
 import UploadToVaultForm from './UploadToVaultForm';
 
 const ViewMeme = ({ editedBlob, isGif }) => {
@@ -68,6 +73,10 @@ const ViewMeme = ({ editedBlob, isGif }) => {
                 Download Image
               </Button>
             </Anchor>
+            <Group gap='5'>
+              <IconDeviceMobile />
+              <Text>Tip: Press and hold image to save it on mobile</Text>
+            </Group>
           </Stack>
           <UploadToVaultForm
             blob={editedBlob}
