@@ -54,7 +54,7 @@ const App = () => {
     );
   } else {
     return (
-      <MantineProvider defaultColorScheme='light' theme={theme}>
+      <MantineProvider defaultColorScheme='auto' theme={theme}>
         <AppShell padding='md' header={{ height: 120 }}>
           <Router>
             <Header />
