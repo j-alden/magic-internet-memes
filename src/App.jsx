@@ -20,7 +20,6 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Louvre from './Pages/Louvre.jsx';
 import CreateMeme from './Pages/CreateMeme.jsx';
 import Leaderboard from './Pages/Leaderboard.jsx';
-import CreateMeme2 from './Pages/CreateMeme copy.jsx';
 
 // React Query
 import { useGetMemes } from './hooks/useGetMemes.js';
